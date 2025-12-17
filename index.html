@@ -161,10 +161,132 @@
             background-color: rgba(255, 105, 180, 0.5);
             border-radius: 10px;
         }
+
+        /* ===== 里世界（友利奈绪宇宙）层级架构 ===== */
+        #tomori-universe {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 9000; background: rgba(0, 0, 0, 0.95);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto; padding: 40px 20px; pointer-events: none;
+        }
+        #tomori-universe.active {
+            opacity: 1;
+            pointer-events: auto;
+            display: flex;
+        }
+        #tomori-universe.hidden {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 星空背景容器 */
+        #tomori-starfield {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        /* 内容容器 */
+        #tomori-content {
+            position: relative; z-index: 10; max-width: 800px;
+            text-align: center; color: #e2e8f0;
+        }
+
+        /* 标题 */
+        #tomori-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem; margin-bottom: 30px;
+            background: linear-gradient(to right, #a78bfa, #fbbf24, #a78bfa);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+        }
+
+        /* 故事/祝福文本 */
+        #tomori-story {
+            font-size: 1.1rem; line-height: 1.8;
+            margin-bottom: 40px; letter-spacing: 0.05em;
+            max-height: 300px; overflow-y: auto;
+            padding: 20px; background: rgba(30, 30, 60, 0.4);
+            border-left: 3px solid rgba(167, 139, 250, 0.6);
+            border-radius: 8px;
+        }
+
+        /* 按钮组 */
+        #tomori-actions {
+            display: flex; gap: 15px; justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tomori-btn {
+            padding: 12px 28px; border: none; border-radius: 25px;
+            font-size: 1rem; cursor: pointer; font-weight: bold;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+        }
+
+        .tomori-btn-primary {
+            background: linear-gradient(135deg, #a78bfa, #fbbf24);
+            color: #1a1a2e; box-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
+        }
+        .tomori-btn-primary:hover {
+            transform: scale(1.05); box-shadow: 0 0 50px rgba(167, 139, 250, 0.8);
+        }
+
+        .tomori-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0; border: 1px solid rgba(167, 139, 250, 0.5);
+        }
+        .tomori-btn-secondary:hover {
+            background: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.8);
+        }
+
+        /* 悬浮重入按钮 */
+        #tomori-re-enter-btn {
+            position: fixed; bottom: 100px; right: 30px; z-index: 200;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, #a78bfa, #fbbf24);
+            border: none; color: white; font-size: 30px;
+            cursor: pointer; box-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
+            display: none; align-items: center; justify-content: center;
+            transition: all 0.3s; animation: tomori-float 3s ease-in-out infinite;
+        }
+        #tomori-re-enter-btn:hover {
+            transform: scale(1.15); box-shadow: 0 0 50px rgba(167, 139, 250, 0.8);
+        }
+        @keyframes tomori-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 底层蛋糕内容淡出效果 */
+        body.tomori-mode {
+            overflow: hidden;
+        }
+        body.tomori-mode #canvas-container,
+        body.tomori-mode #ui-layer {
+            opacity: 0.3;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
     
+    <!-- 里世界：友利奈绪的祝福宇宙 -->
+    <div id="tomori-universe" class="hidden">
+        <canvas id="tomori-starfield"></canvas>
+        <div id="tomori-content">
+            <h1 id="tomori-title">✨ 友利奈绪的祝福 ✨</h1>
+            <div id="tomori-story"></div>
+            <div id="tomori-actions">
+                <button class="tomori-btn tomori-btn-primary" id="tomori-return-btn">← 返回派对</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 悬浮重入按钮 -->
+    <button id="tomori-re-enter-btn" title="再次进入友利奈绪的祝福">✨</button>
+
     <div id="debug-console"></div>
 
     <div id="protocol-warning">
@@ -294,9 +416,14 @@
                             <!-- 滚动区域 -->
                             <div id="typewriter-text-2" class="text-left text-gray-200 space-y-3 font-light leading-6 text-sm md:text-base border-l-2 border-purple-500/50 pl-4 mb-4 flex-grow scrollable-text h-full"></div>
                             
-                            <button id="close-card-btn" class="safe-click-area px-8 py-2 mt-auto rounded-full border border-white/30 text-gray-300 hover:bg-white/10 hover:text-white transition text-sm mx-auto">
-                                收起卡片
-                            </button>
+                            <div class="flex flex-col gap-3 mt-4">
+                                <button id="enter-tomori-btn" class="safe-click-area px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:brightness-110 transition text-sm">
+                                    🌌 友利奈绪的祝福
+                                </button>
+                                <button id="close-card-btn" class="safe-click-area px-8 py-2 rounded-full border border-white/30 text-gray-300 hover:bg-white/10 hover:text-white transition text-sm">
+                                    收起卡片
+                                </button>
+                            </div>
                         </div>
 
                     </div>
@@ -382,7 +509,13 @@
             textContainer1: document.getElementById('typewriter-text-1'),
             textContainer2: document.getElementById('typewriter-text-2'),
             // 自动倒数文本
-            autoCountdownText: document.getElementById('auto-countdown-text')
+            autoCountdownText: document.getElementById('auto-countdown-text'),
+            // 友利奈绪宇宙相关
+            tomoriUniverse: document.getElementById('tomori-universe'),
+            tomoriStory: document.getElementById('tomori-story'),
+            tomoriReturnBtn: document.getElementById('tomori-return-btn'),
+            tomoriReEnterBtn: document.getElementById('tomori-re-enter-btn'),
+            enterTomoriBtn: document.getElementById('enter-tomori-btn')
         };
 
         // 立即初始化 Three.js
@@ -855,6 +988,8 @@
             ui.surpriseLayer.classList.remove('active');
             ui.surpriseLayer.classList.add('hidden');    
             ui.floatingGiftBtn.classList.remove('hidden');
+            // 显示友利奈绪祝福重入按钮
+            ui.tomoriReEnterBtn.style.display = 'flex';
             
             interactionMode = 1; 
             transitionTo('cake'); 
@@ -1065,6 +1200,176 @@
             updateParticles();
             renderer.render(scene, camera);
         }
+
+        // ========== 里世界：友利奈绪的祝福宇宙 ==========
+        let tomoriMode = false;
+        let tomoriStarfieldAnimationId = null;
+
+        // 友利奈绪的祝福内容
+        const tomoriBlessing = `
+            即使只有一个人，
+            我也要记录下这世界的真实。
+            但今天，我想记录的
+            不是世界...
+
+            而是你。
+
+            你说你喜欢友利奈绪的摄像机，
+            喜欢徐栀和陈路周那种自然的爱情，
+            喜欢Aimer的歌声。
+
+            所以我想用最真诚的方式，
+            去记录关于你的一切——
+
+            那天你穿了蓝色的裙子，
+            天气真的很好。
+
+            你笑的时候眼睛会弯起来，
+            有时候会心不在焉地转笔，
+            喜欢听歌的时候盯着天空。
+
+            这些小细节，
+            就像《StarringChild》的歌词一样，
+            值得被永远记录。
+
+            生日快乐。
+
+            不是那种虚伪的、模板的生日快乐，
+            而是——真的，希望你开心的生日快乐。
+
+            在你难过的时候，我就做你的《Brave Shine》；
+            在你开心的时候，我就安安静静听你哼歌。
+
+            既然收了我的祝福，
+            以后不许不开心。
+
+            ——陈路周
+        `;
+
+        function initTomoriStarfield() {
+            const canvas = document.getElementById('tomori-starfield');
+            if (!canvas) return;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+
+            const stars = [];
+            for (let i = 0; i < 300; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5,
+                    opacity: Math.random() * 0.7 + 0.3,
+                    twinkleSpeed: Math.random() * 0.03 + 0.01
+                });
+            }
+
+            function drawTomoriStarfield() {
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                stars.forEach((star) => {
+                    star.opacity += star.twinkleSpeed;
+                    if (star.opacity > 1 || star.opacity < 0.3) star.twinkleSpeed *= -1;
+
+                    ctx.fillStyle = `rgba(226, 232, 240, ${star.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                tomoriStarfieldAnimationId = requestAnimationFrame(drawTomoriStarfield);
+            }
+
+            drawTomoriStarfield();
+        }
+
+        function enterTomoriMode() {
+            if (tomoriMode) return;
+            tomoriMode = true;
+
+            // 显示友利宇宙
+            ui.tomoriUniverse.style.display = 'flex';
+            ui.tomoriUniverse.classList.remove('hidden');
+            setTimeout(() => {
+                ui.tomoriUniverse.classList.add('active');
+            }, 50);
+            
+            // 蛋糕层淡出并禁用交互
+            document.body.classList.add('tomori-mode');
+
+            // 初始化星空
+            setTimeout(() => initTomoriStarfield(), 100);
+
+            // 显示祝福文本
+            ui.tomoriStory.innerHTML = tomoriBlessing.split('\n')
+                .filter(line => line.trim())
+                .map(line => `<p>${line}</p>`)
+                .join('');
+
+            // 显示重入按钮
+            ui.tomoriReEnterBtn.style.display = 'none';
+        }
+
+        function exitTomoriMode() {
+            if (!tomoriMode) return;
+            tomoriMode = false;
+
+            // 停止星空动画
+            if (tomoriStarfieldAnimationId) {
+                cancelAnimationFrame(tomoriStarfieldAnimationId);
+                tomoriStarfieldAnimationId = null;
+            }
+
+            // 隐藏友利宇宙（淡出）
+            ui.tomoriUniverse.classList.remove('active');
+            setTimeout(() => {
+                ui.tomoriUniverse.classList.add('hidden');
+                ui.tomoriUniverse.style.display = 'none';
+            }, 800);
+
+            // 蛋糕层淡入并恢复交互
+            document.body.classList.remove('tomori-mode');
+
+            // 延迟后显示重入按钮
+            setTimeout(() => {
+                ui.tomoriReEnterBtn.style.display = 'flex';
+            }, 800);
+        }
+
+        // 事件监听器
+        if (ui.enterTomoriBtn) {
+            ui.enterTomoriBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // 先收起卡片
+                ui.closeBtn.click();
+                // 延迟后进入友利模式
+                setTimeout(() => enterTomoriMode(), 500);
+            });
+        }
+
+        if (ui.tomoriReturnBtn) {
+            ui.tomoriReturnBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                exitTomoriMode();
+            });
+        }
+
+        if (ui.tomoriReEnterBtn) {
+            ui.tomoriReEnterBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                enterTomoriMode();
+            });
+        }
+
+        // 响应式适配
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('tomori-starfield');
+            if (canvas && tomoriMode) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
     </script>
 </body>
 </html>
