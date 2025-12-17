@@ -1,0 +1,9 @@
+{
+    //"livePreview.defaultPreviewPath": "/index_t copy.html"
+    "liveServer.settings.https": {
+    "enable": true,
+    "cert": "localhost+2.pem",
+    "key": "localhost+2-key.pem",
+    "passphrase": ""
+  }
+}
