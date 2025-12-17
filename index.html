@@ -259,6 +259,767 @@
             50% { transform: translateY(-10px); }
         }
 
+        /* ===== 第一幕：摄像机取景框 ===== */
+        .tomori-stage {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 1; transition: opacity 0.8s ease;
+            z-index: 10;
+        }
+        .tomori-stage.hidden { opacity: 0; pointer-events: none; }
+        .tomori-stage.active { opacity: 1; pointer-events: auto; }
+
+        #tomori-stage-1 {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        #tomori-stage-2 {
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 场景容器 */
+        .scenes-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        /* 单个场景 */
+        .story-scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .story-scene.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .story-scene.prev {
+            transform: translateX(-100%);
+        }
+
+        /* 场景星空背景 */
+        .scene-starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* 场景内容 */
+        .scene-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* 故事卡片 - 单独展示 */
+        .story-scene .story-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+            width: auto;
+            max-width: 500px;
+        }
+
+        /* 导航指示点 */
+        .scene-nav-dots {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 50;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(167, 139, 250, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(167, 139, 250, 0.5);
+        }
+
+        .nav-dot.active {
+            background: #a78bfa;
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.8);
+            transform: scale(1.3);
+        }
+
+        .nav-dot:hover {
+            background: rgba(167, 139, 250, 0.6);
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .story-card {
+                max-width: 90%;
+                padding: 0 10px;
+            }
+
+            .polaroid {
+                width: 160px;
+                height: 200px;
+                padding: 12px;
+            }
+
+            .polaroid-image {
+                height: 120px;
+                font-size: 3.5rem;
+            }
+
+            .polaroid-text {
+                font-size: 11px;
+            }
+
+            .story-text {
+                padding: 15px 20px;
+                max-width: 95%;
+            }
+
+            .story-text h3 {
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+            }
+
+            .story-text p {
+                font-size: 0.9rem;
+                line-height: 1.8;
+            }
+
+            .scene-nav-dots {
+                bottom: 20px;
+            }
+
+            .easter-eggs-container {
+                bottom: 60px;
+                gap: 15px;
+            }
+
+            .easter-egg-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .story-card {
+                gap: 15px;
+            }
+
+            .polaroid {
+                width: 140px;
+                height: 180px;
+                padding: 10px;
+            }
+
+            .polaroid-image {
+                height: 100px;
+                font-size: 3rem;
+            }
+
+            .story-text {
+                padding: 12px 15px;
+            }
+
+            .story-text h3 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .story-text p {
+                font-size: 0.85rem;
+                line-height: 1.7;
+            }
+
+            .nav-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            .easter-eggs-container {
+                bottom: 50px;
+                gap: 12px;
+            }
+
+            .easter-egg-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        #tomori-blur-field {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; filter: blur(8px); opacity: 0.6;
+        }
+
+        /* 摄像机取景框蒙版 */
+        .camcorder-mask {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.4) 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.4) 100%);
+            z-index: 2;
+            border: 3px solid rgba(200, 200, 200, 0.3);
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+        .camcorder-mask::before {
+            content: ''; position: absolute; top: 20px; left: 20px;
+            width: 30px; height: 30px; border: 2px solid rgba(255,255,255,0.4);
+            border-right: none; border-bottom: none;
+        }
+        .camcorder-mask::after {
+            content: ''; position: absolute; bottom: 20px; right: 20px;
+            width: 30px; height: 30px; border: 2px solid rgba(255,255,255,0.4);
+            border-left: none; border-top: none;
+        }
+
+        /* REC 指示器 */
+        .rec-indicator {
+            position: absolute; top: 30px; right: 30px; z-index: 5;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0, 0, 0, 0.6); padding: 8px 14px;
+            border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px; color: #ff4444; font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        .rec-dot {
+            width: 10px; height: 10px; background: #ff4444;
+            border-radius: 50%; animation: rec-blink 1s infinite;
+            box-shadow: 0 0 8px #ff4444;
+        }
+        @keyframes rec-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.3; } }
+
+        /* 日期时间显示 */
+        .datetime-display {
+            position: absolute; bottom: 30px; left: 30px; z-index: 5;
+            background: rgba(0, 0, 0, 0.6); padding: 8px 12px;
+            border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px; color: #ccc; font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        /* 对焦提示 */
+        .focus-hint {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 3; text-align: center; font-size: 2.5rem;
+            animation: focus-pulse 1.5s ease-in-out infinite;
+            opacity: 1; transition: opacity 0.5s;
+        }
+        .focus-hint.hidden { opacity: 0; pointer-events: none; }
+        @keyframes focus-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+
+        /* 对焦完成消息 */
+        .focus-message {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 3; text-align: center; font-size: 1.3rem;
+            color: #a78bfa; opacity: 0; transition: opacity 0.8s;
+            letter-spacing: 0.05em;
+        }
+        .focus-message.active { opacity: 1; }
+
+        /* 第二幕摄像机蒙版 */
+        .stage2-camcorder-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 40;
+            pointer-events: none;
+            background: 
+                linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.3) 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.3) 100%);
+            border: 2px solid rgba(200, 200, 200, 0.2);
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 四角取景框标记 */
+        .stage2-corner-tl {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-top: 3px solid rgba(167, 139, 250, 0.6);
+            border-left: 3px solid rgba(167, 139, 250, 0.6);
+        }
+
+        .stage2-corner-tr {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-top: 3px solid rgba(167, 139, 250, 0.6);
+            border-right: 3px solid rgba(167, 139, 250, 0.6);
+        }
+
+        .stage2-corner-bl {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-bottom: 3px solid rgba(167, 139, 250, 0.6);
+            border-left: 3px solid rgba(167, 139, 250, 0.6);
+        }
+
+        .stage2-corner-br {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-bottom: 3px solid rgba(167, 139, 250, 0.6);
+            border-right: 3px solid rgba(167, 139, 250, 0.6);
+        }
+
+        /* 第二幕REC指示器 */
+        .stage2-rec-indicator {
+            position: fixed;
+            top: 30px;
+            right: 80px;
+            z-index: 45;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            font-size: 14px;
+            color: #fbbf24;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+        }
+
+        .stage2-rec-dot {
+            width: 10px;
+            height: 10px;
+            background: #fbbf24;
+            border-radius: 50%;
+            animation: rec-blink 1s infinite;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        /* 第二幕日期时间显示 */
+        .stage2-datetime-display {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 45;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            font-size: 13px;
+            color: #a78bfa;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .stage2-corner-tl,
+            .stage2-corner-tr,
+            .stage2-corner-bl,
+            .stage2-corner-br {
+                width: 30px;
+                height: 30px;
+                border-width: 2px;
+            }
+
+            .stage2-corner-tl,
+            .stage2-corner-tr {
+                top: 15px;
+            }
+
+            .stage2-corner-bl,
+            .stage2-corner-br {
+                bottom: 15px;
+            }
+
+            .stage2-corner-tl,
+            .stage2-corner-bl {
+                left: 15px;
+            }
+
+            .stage2-corner-tr,
+            .stage2-corner-br {
+                right: 15px;
+            }
+
+            .stage2-rec-indicator {
+                top: 20px;
+                right: 70px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .stage2-rec-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .stage2-datetime-display {
+                bottom: 20px;
+                left: 20px;
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* ===== 第二幕：彗星轨迹与故事 ===== */
+        #tomori-starfield-main {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        #tomori-story-cards {
+            position: relative; z-index: 10;
+            width: 100%; max-width: 1400px;
+            display: flex; flex-direction: row; gap: 40px;
+            align-items: center; justify-content: center;
+            min-height: 100vh; padding: 60px 20px;
+            flex-wrap: wrap;
+        }
+
+        .story-card {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+        
+        .story-card.active { 
+            opacity: 1; 
+            pointer-events: auto;
+        }
+
+        /* 拍立得风格卡片 */
+        .polaroid {
+            flex-shrink: 0;
+            width: 180px;
+            height: 220px;
+            background: #fff8f0;
+            padding: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6),
+                        5px 5px 15px rgba(0, 0, 0, 0.3);
+            transform: rotate(-2deg) perspective(1000px) rotateX(1deg);
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            border: 1px solid rgba(255, 200, 150, 0.2);
+        }
+
+        .story-scene .story-card:nth-child(even) .polaroid {
+            transform: rotate(2deg) perspective(1000px) rotateX(-1deg);
+        }
+
+        .polaroid-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #fce7f3 0%, #dbeafe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            border-radius: 2px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .polaroid-text {
+            font-size: 13px;
+            color: #6b4423;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            letter-spacing: 0.05em;
+            word-break: break-word;
+        }
+
+        /* 故事文本 */
+        .story-text {
+            color: #e2e8f0;
+            text-align: left;
+            padding: 20px 25px;
+            max-width: 90%;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 15px;
+            box-sizing: border-box;
+        }
+
+        .story-text h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fbbf24;
+            font-family: 'Dancing Script', cursive;
+            word-break: break-word;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+            text-align: center;
+        }
+
+        .story-text p {
+            font-size: 1rem;
+            line-height: 1.9;
+            letter-spacing: 0.02em;
+            word-break: break-word;
+            white-space: pre-line;
+            margin: 0;
+        }
+
+        /* 彩蛋按钮容器 - 底部中心布局 */
+        .easter-eggs-container {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .easter-egg-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 192, 203, 0.2);
+            border: 2px solid rgba(255, 192, 203, 0.5);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .easter-egg-btn:hover {
+            background: rgba(255, 192, 203, 0.4);
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
+        }
+
+        /* 心情急救包弹窗 */
+        #heartfelt-aid-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 500; opacity: 0; pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #heartfelt-aid-popup.active {
+            opacity: 1; pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .aid-content {
+            background: rgba(20, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(255, 105, 180, 0.8);
+            border-radius: 25px;
+            padding: 50px 70px;
+            text-align: center;
+            box-shadow: 0 0 80px rgba(255, 105, 180, 0.6),
+                        inset 0 0 50px rgba(167, 139, 250, 0.1);
+            animation: popup-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes popup-bounce {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .aid-animation {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: kick-animation 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+        }
+        
+        @keyframes kick-animation {
+            0% { 
+                transform: scale(0) rotate(-45deg) translateX(-100px);
+                opacity: 0;
+            }
+            60% { 
+                transform: scale(1.4) rotate(15deg) translateX(20px);
+                opacity: 1;
+            }
+            80% {
+                transform: scale(0.9) rotate(-5deg) translateX(-10px);
+            }
+            100% { 
+                transform: scale(1) rotate(0deg) translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake-screen {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .aid-text {
+            font-size: 1.6rem;
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6),
+                         0 0 30px rgba(255, 105, 180, 0.3);
+            line-height: 1.6;
+            animation: text-glow 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes text-glow {
+            from {
+                text-shadow: 0 0 15px rgba(251, 191, 36, 0.6),
+                             0 0 30px rgba(255, 105, 180, 0.3);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(251, 191, 36, 0.8),
+                             0 0 40px rgba(255, 105, 180, 0.5);
+            }
+        }
+
+        .aid-credit {
+            font-size: 1rem;
+            color: #a78bfa;
+            font-style: italic;
+            letter-spacing: 0.1em;
+            opacity: 0.9;
+        }
+
+        /* 返回按钮 */
+        .tomori-return-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 50;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid rgba(167, 139, 250, 0.5);
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+        }
+        
+        .tomori-return-btn:hover {
+            background: rgba(167, 139, 250, 0.4);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .tomori-return-btn {
+                top: 15px;
+                left: 15px;
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* 音乐控制按钮 */
+        .music-control-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(167, 139, 250, 0.2);
+            border: 2px solid rgba(167, 139, 250, 0.5);
+            color: #a78bfa;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .music-control-btn:hover {
+            background: rgba(167, 139, 250, 0.4);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+            transform: scale(1.1);
+        }
+
+        .music-control-btn.muted {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .music-control-btn {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+
         /* 底层蛋糕内容淡出效果 */
         body.tomori-mode {
             overflow: hidden;
@@ -274,12 +1035,154 @@
     
     <!-- 里世界：友利奈绪的祝福宇宙 -->
     <div id="tomori-universe" class="hidden">
-        <canvas id="tomori-starfield"></canvas>
-        <div id="tomori-content">
-            <h1 id="tomori-title">✨ 友利奈绪的祝福 ✨</h1>
-            <div id="tomori-story"></div>
-            <div id="tomori-actions">
-                <button class="tomori-btn tomori-btn-primary" id="tomori-return-btn">← 返回派对</button>
+        <!-- 第一幕：摄像机取景框 -->
+        <div id="tomori-stage-1" class="tomori-stage">
+            <canvas id="tomori-blur-field"></canvas>
+            <div class="camcorder-mask"></div>
+            <div class="rec-indicator">
+                <span class="rec-dot"></span><span>REC</span>
+            </div>
+            <div class="datetime-display"></div>
+            <div class="focus-hint">比个✌️对焦</div>
+            <div class="focus-message hidden">当我的镜头捕捉到你，世界才变得清晰。</div>
+            
+            <!-- 手势调试信息面板 -->
+            <div id="gestureDebugPanel" style="position: absolute; bottom: 30px; left: 30px; color: #a78bfa; font-family: 'Courier New', monospace; font-size: 11px; background: rgba(15, 23, 42, 0.85); padding: 12px; border-radius: 6px; border: 1px solid #7c3aed; min-width: 280px; display: none; z-index: 50;">
+                <div style="color: #fbbf24; margin-bottom: 6px; font-weight: bold;">📊 V手势检测</div>
+                <div id="gestureIndexDist" style="margin: 3px 0;">食指-中指: --</div>
+                <div id="gestureMiddleRingDist" style="margin: 3px 0;">中指-无名指: --</div>
+                <div id="gestureIndexHeight" style="margin: 3px 0;">食指高度: --</div>
+                <div id="gestureMiddleHeight" style="margin: 3px 0;">中指高度: --</div>
+                <div id="gestureStatus" style="margin-top: 6px; color: #ff6b6b; font-weight: bold;">等待手势...</div>
+            </div>
+        </div>
+
+        <!-- 第二幕：彗星轨迹与故事节点 -->
+        <div id="tomori-stage-2" class="tomori-stage hidden">
+            <!-- 摄像机蒙版层 -->
+            <div class="stage2-camcorder-mask">
+                <div class="stage2-corner-tl"></div>
+                <div class="stage2-corner-tr"></div>
+                <div class="stage2-corner-bl"></div>
+                <div class="stage2-corner-br"></div>
+            </div>
+            
+            <!-- REC指示器 -->
+            <div class="stage2-rec-indicator">
+                <span class="stage2-rec-dot"></span>
+                <span>REC</span>
+            </div>
+            
+            <!-- 日期时间显示 -->
+            <div class="stage2-datetime-display"></div>
+            
+            <!-- 场景容器 -->
+            <div id="tomori-scenes-container" class="scenes-container">
+                <!-- 场景1：取景框 -->
+                <div class="story-scene" data-scene="0">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image">📹</div>
+                                <div class="polaroid-text">The Lens</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【取景框】</h3>
+                                <p>友利奈绪习惯透过镜头观察世界，因为这让她保持冷静。
+而我习惯在人群中默默看着你，不仅是为了记录你的笑容，更是为了在你感到世界灰暗的时候，确认你的坐标。
+我不是超能力者，但我会是你最忠实的观众。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景2：耳机 -->
+                <div class="story-scene" data-scene="1">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image">🎧</div>
+                                <div class="polaroid-text">The Frequency</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【耳机】</h3>
+                                <p>每个人都有想逃离世界的瞬间，想躲进连帽衫的帽子里，隔绝一切杂音。
+就像有宇在这个不完美的世界上挣扎一样。
+当你累的时候，请把耳机分我一半。我不说话，只陪你听完这首歌。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景3：蛋包饭 -->
+                <div class="story-scene" data-scene="2">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image">🍚</div>
+                                <div class="polaroid-text">The Flavor</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【蛋包饭】</h3>
+                                <p>生活不总是甜奶油蛋糕，有时候它像那盘加了秘制披萨酱的蛋包饭，味道有点奇怪，有点酸涩。
+但那是友利笨拙的心意，也是我想给你的承诺：
+无论日子是甜是苦，我都会陪你一口一口吃完。因为只有和你在一起，这些味道才叫'生活'。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景4：星空 -->
+                <div class="story-scene" data-scene="3">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image">⭐</div>
+                                <div class="polaroid-text">The Promise</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【星空】</h3>
+                                <p>在这个没有超能力的现实世界里，我没法为你掠夺全世界的疾病和痛苦。
+但我向你承诺：
+在你失落低谷时，我会像那天夕阳下的友利奈绪一样，坚定地站在你身后。
+生日快乐。我们的故事，未完待续。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航指示 -->
+            <div class="scene-nav-dots">
+                <span class="nav-dot active" data-scene="0"></span>
+                <span class="nav-dot" data-scene="1"></span>
+                <span class="nav-dot" data-scene="2"></span>
+                <span class="nav-dot" data-scene="3"></span>
+            </div>
+
+            <!-- 彩蛋按钮 -->
+            <div class="easter-eggs-container">
+                <button id="heartfelt-aid-btn" class="easter-egg-btn" title="丧的时候点我">🩹</button>
+                <button id="voucher-btn" class="easter-egg-btn" title="万能兑换券">🎫</button>
+            </div>
+
+            <!-- 返回按钮 -->
+            <button id="tomori-return-btn-2" class="tomori-return-btn">← 返回派对</button>
+            
+            <!-- 音乐控制按钮 -->
+            <button id="music-control-btn" class="music-control-btn" title="音乐开/关">🎵</button>
+        </div>
+
+        <!-- 彩蛋：心情急救包动画 -->
+        <div id="heartfelt-aid-popup">
+            <div class="aid-content">
+                <div class="aid-animation">💥 飞踢 💥</div>
+                <p class="aid-text">笨蛋！不准丧！给我打起精神来！</p>
+                <p class="aid-credit">—— 友利奈绪</p>
             </div>
         </div>
     </div>
@@ -295,7 +1198,7 @@
     </div>
 
     <audio id="bgm" loop>
-        <source src="./src/Kataomoi.mp3" type="audio/mpeg">
+        <source src="./src/happy-birthday-155461.mp3" type="audio/mpeg">
     </audio>
 
     <video class="input_video" playsinline></video>
@@ -478,6 +1381,14 @@
         let audioContext, analyser;
         const bgm = document.getElementById('bgm');
 
+        // Tomori宇宙状态管理
+        let tomoriMode = false;
+        let tomoriCurrentStage = 1; // 1=摄像机取景框, 2=彗星轨迹故事
+        let tomoriStarfieldAnimationId = null;
+        let tomoriBlurFieldAnimationId = null;
+        let currentNodeIndex = 0;
+        let handGestureDetected = false;
+
         const ui = {
             startOverlay: document.getElementById('start-overlay'),
             uiLayer: document.getElementById('ui-layer'),
@@ -512,8 +1423,28 @@
             autoCountdownText: document.getElementById('auto-countdown-text'),
             // 友利奈绪宇宙相关
             tomoriUniverse: document.getElementById('tomori-universe'),
-            tomoriStory: document.getElementById('tomori-story'),
-            tomoriReturnBtn: document.getElementById('tomori-return-btn'),
+            tomoriStage1: document.getElementById('tomori-stage-1'),
+            tomoriStage2: document.getElementById('tomori-stage-2'),
+            tomoriBlurField: document.getElementById('tomori-blur-field'),
+            tomoriStarfieldMain: document.getElementById('tomori-starfield-main'),
+            gestureDebugPanel: document.getElementById('gestureDebugPanel'),
+            gestureIndexDist: document.getElementById('gestureIndexDist'),
+            gestureMiddleRingDist: document.getElementById('gestureMiddleRingDist'),
+            gestureIndexHeight: document.getElementById('gestureIndexHeight'),
+            gestureMiddleHeight: document.getElementById('gestureMiddleHeight'),
+            gestureStatus: document.getElementById('gestureStatus'),
+            storyCards: document.querySelectorAll('.story-card'),
+            focusHint: document.querySelector('.focus-hint'),
+            focusMessage: document.querySelector('.focus-message'),
+            gestureDebugPanel: document.getElementById('gestureDebugPanel'),
+            gestureIndexDist: document.getElementById('gestureIndexDist'),
+            datetimeDisplay: document.querySelector('.datetime-display'),
+            stage2DatetimeDisplay: document.querySelector('.stage2-datetime-display'),
+            heartfeltAidBtn: document.getElementById('heartfelt-aid-btn'),
+            voucherBtn: document.getElementById('voucher-btn'),
+            heartfeltAidPopup: document.getElementById('heartfelt-aid-popup'),
+            musicControlBtn: document.getElementById('music-control-btn'),
+            tomoriReturnBtn2: document.getElementById('tomori-return-btn-2'),
             tomoriReEnterBtn: document.getElementById('tomori-re-enter-btn'),
             enterTomoriBtn: document.getElementById('enter-tomori-btn')
         };
@@ -1137,62 +2068,102 @@
             if (bgm.paused) bgm.play(); else bgm.pause();
         });
 
+        let globalHands = null;
+        let globalCamera = null;
+        
         async function initCamera() {
             const video = document.getElementsByClassName('input_video')[0];
             
             if (typeof Hands === 'undefined' || typeof Camera === 'undefined') {
-                throw new Error("MediaPipe 库未加载");
+                console.error("MediaPipe 库未加载");
+                return;
             }
 
-            const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`});
-            
-            hands.setOptions({ 
-                maxNumHands: 1, 
-                modelComplexity: 0, 
-                minDetectionConfidence: 0.5, 
-                minTrackingConfidence: 0.5 
-            });
-            
-            hands.onResults((results) => {
-                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                    ui.camStatusDot.className = "w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_8px_#4ade80]";
-                    ui.camStatusText.innerText = "DETECTED";
-                    ui.camStatusText.className = "text-[8px] text-green-400 font-mono font-bold";
-                    
-                    if (currentState === STATE.IDLE) {
-                        startSequence();
-                    }
-                    if (interactionMode === 1) {
-                        const currentHandX = results.multiHandLandmarks[0][9].x; 
-                        const delta = currentHandX - lastHandX;
-                        if (Math.abs(delta) > 0.002) {
-                            // 大幅提高手势控制灵敏度
-                            rotationVelocity += delta * -0.4; 
+            try {
+                const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`});
+                
+                hands.setOptions({ 
+                    maxNumHands: 1, 
+                    modelComplexity: 0, 
+                    minDetectionConfidence: 0.5, 
+                    minTrackingConfidence: 0.5 
+                });
+                
+                globalHands = hands;
+                
+                hands.onResults((results) => {
+                    // 第一幕手势检测（在Tomori模式中）
+                    if (tomoriMode && tomoriCurrentStage === 1 && results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                        const landmarks = results.multiHandLandmarks[0];
+                        if (checkStage1HandGesture(landmarks) && !handGestureDetected) {
+                            console.log("✌ V手势检测成功！触发转场...");
+                            handGestureDetected = true;
+                            
+                            // 清除自动进入倒计时
+                            if (autoEnterTimer) {
+                                clearInterval(autoEnterTimer);
+                                autoEnterTimer = null;
+                            }
+                            
+                            ui.focusHint.classList.add('hidden');
+                            ui.focusMessage.innerHTML = '✌ 手势识别成功！';
+                            ui.focusMessage.classList.add('active');
+                            setTimeout(() => {
+                                transitionToStage2();
+                            }, 1500);
                         }
-                        lastHandX = currentHandX;
                     }
-                } else {
-                    ui.camStatusDot.className = "w-1.5 h-1.5 rounded-full bg-red-500";
-                    ui.camStatusText.innerText = "NO HAND";
-                    ui.camStatusText.className = "text-[8px] text-red-400 font-mono";
-                }
 
-                const ctx = document.getElementById('output_canvas').getContext('2d');
-                ctx.clearRect(0, 0, 160, 120);
-                if(results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                     for (const l of results.multiHandLandmarks) {
-                         drawConnectors(ctx, l, HAND_CONNECTIONS, {color: '#ff69b4', lineWidth: 2});
-                     }
-                }
-            });
+                    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                        ui.camStatusDot.className = "w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_8px_#4ade80]";
+                        ui.camStatusText.innerText = "DETECTED";
+                        ui.camStatusText.className = "text-[8px] text-green-400 font-mono font-bold";
+                        
+                        if (currentState === STATE.IDLE) {
+                            startSequence();
+                        }
+                        if (interactionMode === 1) {
+                            const currentHandX = results.multiHandLandmarks[0][9].x; 
+                            const delta = currentHandX - lastHandX;
+                            if (Math.abs(delta) > 0.002) {
+                                // 大幅提高手势控制灵敏度
+                                rotationVelocity += delta * -0.4; 
+                            }
+                            lastHandX = currentHandX;
+                        }
+                    } else {
+                        ui.camStatusDot.className = "w-1.5 h-1.5 rounded-full bg-red-500";
+                        ui.camStatusText.innerText = "NO HAND";
+                        ui.camStatusText.className = "text-[8px] text-red-400 font-mono";
+                    }
 
-            const camera = new Camera(video, { 
-                onFrame: async () => { await hands.send({image: video}); }, 
-                width: 320, 
-                height: 240 
-            });
-            
-            return camera.start();
+                    const ctx = document.getElementById('output_canvas').getContext('2d');
+                    ctx.clearRect(0, 0, 160, 120);
+                    if(results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                         for (const l of results.multiHandLandmarks) {
+                             drawConnectors(ctx, l, HAND_CONNECTIONS, {color: '#ff69b4', lineWidth: 2});
+                         }
+                    }
+                });
+
+                const camera = new Camera(video, { 
+                    onFrame: async () => { 
+                        if (globalHands) {
+                            await globalHands.send({image: video});
+                        }
+                    }, 
+                    width: 320, 
+                    height: 240 
+                });
+                
+                globalCamera = camera;
+                await camera.start();
+                console.log("✅ 摄像头和手势识别已启动");
+                return camera;
+            } catch (error) {
+                console.error("初始化摄像头失败:", error);
+                throw error;
+            }
         }
 
         function render() {
@@ -1202,9 +2173,6 @@
         }
 
         // ========== 里世界：友利奈绪的祝福宇宙 ==========
-        let tomoriMode = false;
-        let tomoriStarfieldAnimationId = null;
-
         // 友利奈绪的祝福内容
         const tomoriBlessing = `
             即使只有一个人，
@@ -1246,47 +2214,402 @@
             ——陈路周
         `;
 
-        function initTomoriStarfield() {
-            const canvas = document.getElementById('tomori-starfield');
+        // ===== 第一幕：摄像机取景框 =====
+        function initBlurField() {
+            const canvas = ui.tomoriBlurField;
             if (!canvas) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             const ctx = canvas.getContext('2d');
 
-            const stars = [];
-            for (let i = 0; i < 300; i++) {
-                stars.push({
+            const particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    radius: Math.random() * 1.5,
-                    opacity: Math.random() * 0.7 + 0.3,
-                    twinkleSpeed: Math.random() * 0.03 + 0.01
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.random() * 2 + 0.5,
+                    opacity: Math.random() * 0.4 + 0.1
                 });
             }
 
-            function drawTomoriStarfield() {
-                ctx.fillStyle = 'rgba(15, 23, 42, 0.05)';
+            function drawBlurField() {
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                stars.forEach((star) => {
-                    star.opacity += star.twinkleSpeed;
-                    if (star.opacity > 1 || star.opacity < 0.3) star.twinkleSpeed *= -1;
+                particles.forEach((p) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-                    ctx.fillStyle = `rgba(226, 232, 240, ${star.opacity})`;
+                    ctx.fillStyle = `rgba(200, 200, 200, ${p.opacity})`;
                     ctx.beginPath();
-                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                     ctx.fill();
                 });
 
-                tomoriStarfieldAnimationId = requestAnimationFrame(drawTomoriStarfield);
+                tomoriBlurFieldAnimationId = requestAnimationFrame(drawBlurField);
             }
 
-            drawTomoriStarfield();
+            tomoriBlurFieldAnimationId = requestAnimationFrame(drawBlurField);
         }
+
+        // 更新日期时间显示
+        function updateDateTimeDisplay() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const dateTimeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            
+            // 更新第一幕的日期时间
+            if (ui.datetimeDisplay) {
+                ui.datetimeDisplay.textContent = dateTimeStr;
+            }
+            
+            // 更新第二幕的日期时间
+            if (ui.stage2DatetimeDisplay) {
+                ui.stage2DatetimeDisplay.textContent = dateTimeStr;
+            }
+        }
+
+        // 第一幕手势检测
+        function checkStage1HandGesture(landmarks) {
+            if (!landmarks || landmarks.length < 21) return false;
+            
+            // 显示调试面板
+            if (ui.gestureDebugPanel) {
+                ui.gestureDebugPanel.style.display = 'block';
+            }
+            
+            // 检测V手势：食指和中指张开
+            const indexTip = landmarks[8];      // 食指尖端
+            const middleTip = landmarks[12];    // 中指尖端
+            const ringTip = landmarks[16];      // 无名指尖端
+            const indexMcp = landmarks[5];      // 食指掌指关节
+            const middleMcp = landmarks[9];     // 中指掌指关节
+            
+            // 计算指尖之间的距离
+            const indexMiddleDistance = Math.hypot(
+                indexTip.x - middleTip.x,
+                indexTip.y - middleTip.y
+            );
+            const middleRingDistance = Math.hypot(
+                middleTip.x - ringTip.x,
+                middleTip.y - ringTip.y
+            );
+            
+            // 检查手指是否抬起（相对于掌心）
+            const indexHeight = Math.abs(indexMcp.y - indexTip.y);
+            const middleHeight = Math.abs(middleMcp.y - middleTip.y);
+            
+            // 更新调试信息（降低阈值让识别更容易）
+            if (ui.gestureIndexDist) ui.gestureIndexDist.textContent = `食指-中指: ${indexMiddleDistance.toFixed(3)} ${indexMiddleDistance > 0.025 ? '✓' : '✗'}`;
+            if (ui.gestureMiddleRingDist) ui.gestureMiddleRingDist.textContent = `中指-无名指: ${middleRingDistance.toFixed(3)} ${middleRingDistance < 0.06 ? '✓' : '✗'}`;
+            if (ui.gestureIndexHeight) ui.gestureIndexHeight.textContent = `食指高度: ${indexHeight.toFixed(3)} ${indexHeight > 0.03 ? '✓' : '✗'}`;
+            if (ui.gestureMiddleHeight) ui.gestureMiddleHeight.textContent = `中指高度: ${middleHeight.toFixed(3)} ${middleHeight > 0.03 ? '✓' : '✗'}`;
+            
+            // V手势判定（降低难度）：
+            // 1. 食指和中指距离较大（张开）- 从0.04降到0.025
+            // 2. 中指和无名指距离较小（并拢）- 从0.04放宽到0.06
+            // 3. 手指抬起 - 从0.05降到0.03
+            const isVGesture = indexMiddleDistance > 0.025 && 
+                              middleRingDistance < 0.06 && 
+                              indexHeight > 0.03 && 
+                              middleHeight > 0.03;
+            
+            // 更新状态
+            if (ui.gestureStatus) {
+                if (isVGesture) {
+                    ui.gestureStatus.textContent = '✅ V手势已检测！';
+                    ui.gestureStatus.style.color = '#4ade80';
+                } else {
+                    ui.gestureStatus.textContent = '❌ 继续比V手势...';
+                    ui.gestureStatus.style.color = '#ff6b6b';
+                }
+            }
+            
+            return isVGesture;
+        }
+
+        // 从第一幕转向第二幕
+        function transitionToStage2() {
+            ui.tomoriStage1.classList.add('hidden');
+            ui.tomoriStage2.classList.remove('hidden');
+            tomoriCurrentStage = 2;
+
+            // 切换音乐
+            if (bgm.src && !bgm.src.includes('Kataomoi.mp3')) {
+                bgm.pause();
+                bgm.currentTime = 0;
+            }
+            
+            // 初始化星空和故事卡片
+            setTimeout(() => {
+                initMainStarfield();
+                currentNodeIndex = 0;
+                activateNode(0);
+            }, 300);
+        }
+
+        // ===== 第二幕：彗星轨迹与故事 =====
+        let cameraProgressZ = 0;
+        let targetCameraProgressZ = 0;
+        
+        function initMainStarfield() {
+            // 获取所有场景容器和Canvas元素
+            const scenes = document.querySelectorAll('.story-scene');
+            const canvases = document.querySelectorAll('.scene-starfield');
+            
+            if (canvases.length === 0) {
+                console.warn('未找到场景Canvas元素');
+                return;
+            }
+
+            // 为每个Canvas初始化星空
+            const starfields = [];
+            canvases.forEach((canvas, sceneIndex) => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                const ctx = canvas.getContext('2d');
+                const stars = [];
+                
+                // 为每个场景创建独立的星星
+                for (let i = 0; i < 300; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 1.5,
+                        opacity: Math.random() * 0.7 + 0.3,
+                        twinkleSpeed: Math.random() * 0.03 + 0.01,
+                        baseOpacity: Math.random() * 0.7 + 0.3
+                    });
+                }
+                
+                starfields.push({
+                    canvas,
+                    ctx,
+                    stars,
+                    sceneIndex,
+                    animationId: null
+                });
+            });
+
+            // 初始激活第一个场景
+            currentNodeIndex = 0;
+            updateSceneVisibility();
+
+            // 启动所有Canvas的渲染
+            starfields.forEach(field => {
+                renderStarfield(field);
+            });
+
+            // 保存starfields以便后续更新
+            window.starfields = starfields;
+        }
+
+        function renderStarfield(field) {
+            const { canvas, ctx, stars, sceneIndex } = field;
+            const isActive = sceneIndex === currentNodeIndex;
+            
+            // 清晰的背景
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制彗星轨迹
+            const cometProgress = (Date.now() % 8000) / 8000;
+            const cometX = canvas.width * cometProgress;
+            const cometY = canvas.height * 0.3;
+            
+            // 彗星轨迹线
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.15)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(0, cometY);
+            ctx.lineTo(canvas.width, cometY);
+            ctx.stroke();
+
+            // 彗星头部 - 在活跃场景中更亮
+            const cometOpacity = isActive ? 0.8 : 0.5;
+            const gradient = ctx.createRadialGradient(cometX, cometY, 0, cometX, cometY, 20);
+            gradient.addColorStop(0, `rgba(251, 191, 36, ${cometOpacity})`);
+            gradient.addColorStop(1, 'rgba(251, 191, 36, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(cometX, cometY, 20, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 绘制当前场景的节点指示（发光点）
+            const nodeX = canvas.width * 0.5;
+            const nodeY = canvas.height * 0.3;
+            
+            if (isActive) {
+                // 活跃节点 - 强烈的发光和脉动
+                const glowGradient = ctx.createRadialGradient(nodeX, nodeY, 0, nodeX, nodeY, 100);
+                glowGradient.addColorStop(0, 'rgba(251, 191, 36, 0.4)');
+                glowGradient.addColorStop(0.5, 'rgba(251, 191, 36, 0.1)');
+                glowGradient.addColorStop(1, 'rgba(251, 191, 36, 0)');
+                ctx.fillStyle = glowGradient;
+                ctx.beginPath();
+                ctx.arc(nodeX, nodeY, 100, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 脉动环
+                const pulseSize = 20 + Math.sin(Date.now() / 200) * 10;
+                ctx.strokeStyle = 'rgba(251, 191, 36, 0.8)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(nodeX, nodeY, pulseSize, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 中心点
+                ctx.fillStyle = 'rgba(251, 191, 36, 1)';
+                ctx.beginPath();
+                ctx.arc(nodeX, nodeY, 5, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // 非活跃节点 - 淡出的指示
+                const dimGradient = ctx.createRadialGradient(nodeX, nodeY, 0, nodeX, nodeY, 50);
+                dimGradient.addColorStop(0, 'rgba(167, 139, 250, 0.2)');
+                dimGradient.addColorStop(1, 'rgba(167, 139, 250, 0)');
+                ctx.fillStyle = dimGradient;
+                ctx.beginPath();
+                ctx.arc(nodeX, nodeY, 50, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 绘制星星 - 闪烁效果
+            stars.forEach((star) => {
+                star.opacity += star.twinkleSpeed;
+                if (star.opacity > 1 || star.opacity < 0.3) star.twinkleSpeed *= -1;
+
+                const starOpacity = isActive ? star.opacity : star.opacity * 0.5;
+                ctx.fillStyle = `rgba(226, 232, 240, ${Math.min(1, starOpacity)})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 继续动画
+            field.animationId = requestAnimationFrame(() => renderStarfield(field));
+        }
+
+        function updateSceneVisibility() {
+            const scenes = document.querySelectorAll('.story-scene');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            scenes.forEach((scene, index) => {
+                if (index === currentNodeIndex) {
+                    scene.classList.add('active');
+                    scene.classList.remove('prev');
+                } else if (index < currentNodeIndex) {
+                    scene.classList.remove('active');
+                    scene.classList.add('prev');
+                } else {
+                    scene.classList.remove('active', 'prev');
+                }
+            });
+
+            // 更新导航点
+            navDots.forEach((dot, index) => {
+                if (index === currentNodeIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // 激活故事卡片节点 - 场景切换
+        function activateNode(index) {
+            const newIndex = Math.max(0, Math.min(index, 3));
+            if (newIndex === currentNodeIndex) return;
+            
+            currentNodeIndex = newIndex;
+            updateSceneVisibility();
+        }
+
+        // 处理故事卡片的滚轮和滑动 - 带节流防止快速切换
+        function setupStoryCardInteraction() {
+            let touchStartY = 0;
+            let isTransitioning = false;
+            const transitionDelay = 800; // 毫秒
+            
+            // 导航点点击事件
+            const navDots = document.querySelectorAll('.nav-dot');
+            navDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    if (!isTransitioning) {
+                        isTransitioning = true;
+                        activateNode(index);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    }
+                });
+            });
+            
+            // 滚轮事件
+            ui.tomoriStage2.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                if (isTransitioning) return;
+                
+                if (e.deltaY > 0 && currentNodeIndex < 3) {
+                    isTransitioning = true;
+                    activateNode(currentNodeIndex + 1);
+                    setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                } else if (e.deltaY < 0 && currentNodeIndex > 0) {
+                    isTransitioning = true;
+                    activateNode(currentNodeIndex - 1);
+                    setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                }
+            }, { passive: false });
+
+            // 触摸事件
+            ui.tomoriStage2.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            ui.tomoriStage2.addEventListener('touchmove', (e) => {
+                if (isTransitioning) return;
+                
+                const touchCurrentY = e.touches[0].clientY;
+                const threshold = 60;
+                const diff = touchStartY - touchCurrentY;
+                
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0 && currentNodeIndex < 3) {
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex + 1);
+                        touchStartY = touchCurrentY;
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    } else if (diff < 0 && currentNodeIndex > 0) {
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex - 1);
+                        touchStartY = touchCurrentY;
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    }
+                }
+            }, { passive: true });
+        }
+
+        let autoEnterTimer = null;
+        let autoEnterCountdown = 10;
 
         function enterTomoriMode() {
             if (tomoriMode) return;
             tomoriMode = true;
+            tomoriCurrentStage = 1;
+            autoEnterCountdown = 10;
+            console.log("🌌 进入Tomori模式 - 第一幕已开启");
+            console.log("📹 请对摄像头比V手势以对焦（10秒后自动进入）");
+
+            // 切换到Kataomoi.mp3音乐
+            switchToTomoriMusic();
 
             // 显示友利宇宙
             ui.tomoriUniverse.style.display = 'flex';
@@ -1298,27 +2621,89 @@
             // 蛋糕层淡出并禁用交互
             document.body.classList.add('tomori-mode');
 
-            // 初始化星空
-            setTimeout(() => initTomoriStarfield(), 100);
+            // 第一幕：摄像机取景框
+            ui.tomoriStage1.classList.remove('hidden');
+            ui.tomoriStage2.classList.add('hidden');
+            
+            // 初始化第一幕
+            setTimeout(() => {
+                initBlurField();
+                updateDateTimeDisplay();
+                setInterval(updateDateTimeDisplay, 1000);
+                ui.focusHint.classList.remove('hidden');
+                ui.focusMessage.classList.remove('active');
+                
+                // 显示手势调试面板
+                if (ui.gestureDebugPanel) {
+                    ui.gestureDebugPanel.style.display = 'block';
+                }
+                
+                // 启动10秒自动进入倒计时
+                startAutoEnterCountdown();
+            }, 100);
 
-            // 显示祝福文本
-            ui.tomoriStory.innerHTML = tomoriBlessing.split('\n')
-                .filter(line => line.trim())
-                .map(line => `<p>${line}</p>`)
-                .join('');
-
-            // 显示重入按钮
+            // 隐藏重入按钮
             ui.tomoriReEnterBtn.style.display = 'none';
+            
+            // 设置第二幕交互
+            setupStoryCardInteraction();
+        }
+
+        function startAutoEnterCountdown() {
+            // 清除之前的倒计时
+            if (autoEnterTimer) {
+                clearInterval(autoEnterTimer);
+            }
+            
+            autoEnterCountdown = 10;
+            
+            // 在提示文本中显示倒计时
+            const updateCountdownText = () => {
+                if (ui.focusHint && tomoriCurrentStage === 1) {
+                    const originalText = '对摄像头比个 ✌ 对焦进入故事';
+                    ui.focusHint.innerHTML = `${originalText}<br><span style="font-size: 0.8em; color: #fbbf24;">${autoEnterCountdown}秒后自动进入</span>`;
+                }
+            };
+            
+            updateCountdownText();
+            
+            autoEnterTimer = setInterval(() => {
+                autoEnterCountdown--;
+                
+                if (autoEnterCountdown <= 0) {
+                    clearInterval(autoEnterTimer);
+                    autoEnterTimer = null;
+                    
+                    // 如果还没检测到手势且仍在第一幕，自动进入第二幕
+                    if (tomoriMode && tomoriCurrentStage === 1 && !handGestureDetected) {
+                        console.log("⏰ 倒计时结束，自动进入第二幕");
+                        handGestureDetected = true;
+                        ui.focusHint.classList.add('hidden');
+                        ui.focusMessage.innerHTML = '✨ 自动进入故事世界...';
+                        ui.focusMessage.classList.add('active');
+                        setTimeout(() => {
+                            transitionToStage2();
+                        }, 1500);
+                    }
+                } else {
+                    updateCountdownText();
+                }
+            }, 1000);
         }
 
         function exitTomoriMode() {
             if (!tomoriMode) return;
             tomoriMode = false;
+            handGestureDetected = false; // 重置手势检测标志
 
-            // 停止星空动画
+            // 停止所有动画
             if (tomoriStarfieldAnimationId) {
                 cancelAnimationFrame(tomoriStarfieldAnimationId);
                 tomoriStarfieldAnimationId = null;
+            }
+            if (tomoriBlurFieldAnimationId) {
+                cancelAnimationFrame(tomoriBlurFieldAnimationId);
+                tomoriBlurFieldAnimationId = null;
             }
 
             // 隐藏友利宇宙（淡出）
@@ -1337,7 +2722,165 @@
             }, 800);
         }
 
-        // 事件监听器
+        // ===== 音乐控制功能 =====
+        let isMusicPlaying = true;
+        
+        function switchToTomoriMusic() {
+            console.log('🎵 切换音乐到 Kataomoi.mp3');
+            
+            // 暂停当前音乐
+            bgm.pause();
+            
+            // 切换到Kataomoi.mp3
+            bgm.src = './src/Kataomoi.mp3';
+            bgm.load();
+            
+            // 播放新音乐
+            bgm.play().then(() => {
+                console.log('✅ Kataomoi.mp3 已开始播放');
+                isMusicPlaying = true;
+                updateMusicButtonState();
+            }).catch(err => {
+                console.warn('⚠️ 音乐自动播放被阻止，请点击音乐按钮手动播放', err);
+                isMusicPlaying = false;
+                updateMusicButtonState();
+            });
+        }
+        
+        function updateMusicButtonState() {
+            if (ui.musicControlBtn) {
+                if (isMusicPlaying) {
+                    ui.musicControlBtn.textContent = '🎵';
+                    ui.musicControlBtn.classList.remove('muted');
+                    ui.musicControlBtn.title = '点击关闭音乐';
+                } else {
+                    ui.musicControlBtn.textContent = '🔇';
+                    ui.musicControlBtn.classList.add('muted');
+                    ui.musicControlBtn.title = '点击播放音乐';
+                }
+            }
+        }
+        
+        // 音乐控制按钮事件
+        if (ui.musicControlBtn) {
+            ui.musicControlBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                if (isMusicPlaying) {
+                    bgm.pause();
+                    isMusicPlaying = false;
+                    console.log('🔇 音乐已暂停');
+                } else {
+                    bgm.play().then(() => {
+                        isMusicPlaying = true;
+                        console.log('🎵 音乐已播放');
+                    }).catch(err => {
+                        console.warn('⚠️ 音乐播放失败', err);
+                    });
+                }
+                
+                updateMusicButtonState();
+            });
+        }
+
+        // ===== 彩蛋功能 =====
+        // 心情急救包
+        if (ui.heartfeltAidBtn) {
+            ui.heartfeltAidBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('🩹 心情急救包已触发！');
+                
+                // 屏幕震动效果
+                document.body.style.animation = 'none';
+                setTimeout(() => {
+                    document.body.style.animation = 'shake-screen 0.5s';
+                }, 10);
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 600);
+                
+                // 重置动画（强制重新播放）
+                const aidContent = ui.heartfeltAidPopup.querySelector('.aid-content');
+                const aidAnimation = ui.heartfeltAidPopup.querySelector('.aid-animation');
+                
+                if (aidContent) {
+                    aidContent.style.animation = 'none';
+                    setTimeout(() => {
+                        aidContent.style.animation = '';
+                    }, 10);
+                }
+                
+                if (aidAnimation) {
+                    aidAnimation.style.animation = 'none';
+                    setTimeout(() => {
+                        aidAnimation.style.animation = '';
+                    }, 10);
+                }
+                
+                // 显示弹窗
+                ui.heartfeltAidPopup.classList.remove('hidden');
+                ui.heartfeltAidPopup.classList.add('active');
+                
+                // 3秒后关闭弹窗
+                setTimeout(() => {
+                    ui.heartfeltAidPopup.classList.remove('active');
+                }, 3000);
+            });
+        }
+
+        // 万能兑换券
+        if (ui.voucherBtn) {
+            ui.voucherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                generateVoucher();
+            });
+        }
+
+        function generateVoucher() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+
+            // 背景
+            const gradient = ctx.createLinearGradient(0, 0, 600, 400);
+            gradient.addColorStop(0, '#0f172a');
+            gradient.addColorStop(1, '#1e293b');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 600, 400);
+
+            // 边框
+            ctx.strokeStyle = '#a78bfa';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(20, 20, 560, 360);
+
+            // 标题
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('【无限期陪伴券】', 300, 80);
+
+            // 内容
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = '18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('持有者：你', 300, 150);
+            ctx.fillText('发行者：永远爱你的人', 300, 190);
+            ctx.fillText('效力：无论何时何地', 300, 240);
+            ctx.fillText('此券可兑换"无条件的陪伴"一次', 300, 280);
+            
+            ctx.fillStyle = '#a78bfa';
+            ctx.font = 'italic 16px Arial';
+            ctx.fillText('就像友利对有宇那样。', 300, 340);
+
+            // 下载
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = '无限期陪伴券.png';
+            link.click();
+        }
+
+        // ===== 事件监听器 =====
         if (ui.enterTomoriBtn) {
             ui.enterTomoriBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1348,8 +2891,8 @@
             });
         }
 
-        if (ui.tomoriReturnBtn) {
-            ui.tomoriReturnBtn.addEventListener('click', (e) => {
+        if (ui.tomoriReturnBtn2) {
+            ui.tomoriReturnBtn2.addEventListener('click', (e) => {
                 e.stopPropagation();
                 exitTomoriMode();
             });
@@ -1364,10 +2907,13 @@
 
         // 响应式适配
         window.addEventListener('resize', () => {
-            const canvas = document.getElementById('tomori-starfield');
-            if (canvas && tomoriMode) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+            if (tomoriMode && tomoriCurrentStage === 1 && ui.tomoriBlurField) {
+                ui.tomoriBlurField.width = window.innerWidth;
+                ui.tomoriBlurField.height = window.innerHeight;
+            }
+            if (tomoriMode && tomoriCurrentStage === 2 && ui.tomoriStarfieldMain) {
+                ui.tomoriStarfieldMain.width = window.innerWidth;
+                ui.tomoriStarfieldMain.height = window.innerHeight;
             }
         });
     </script>
