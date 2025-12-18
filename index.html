@@ -106,7 +106,7 @@
         .color-control input { width: 30px; height: 20px; border: none; border-radius: 4px; cursor: pointer; background: transparent; }
 
         #top-banner {
-            position: absolute; top: 15%; left: 0; width: 100%;
+            position: absolute; top: 18%; left: 0; width: 100%;
             text-align: center; pointer-events: none; z-index: 5;
             animation: float-banner 4s ease-in-out infinite;
         }
@@ -883,7 +883,7 @@
 
         @media (max-width: 768px) {
             .easter-eggs-container {
-                bottom: 55px;
+                bottom: 40px;
                 gap: 15px;
             }
 
@@ -934,6 +934,8 @@
             .aid-text {
                 font-size: 1.2rem;
                 margin-bottom: 10px;
+                letter-spacing: 0.05em;
+                word-break: keep-all;
             }
 
             .aid-credit {
@@ -1027,6 +1029,181 @@
             font-style: italic;
             letter-spacing: 0.1em;
             opacity: 0.9;
+        }
+
+        /* 无限期陪伴券弹窗 */
+        #voucher-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 500; opacity: 0; pointer-events: none;
+            transition: all 0.8s ease;
+        }
+        #voucher-popup.active {
+            opacity: 1; pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #voucher-popup .aid-content {
+            background: rgba(30, 20, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(167, 139, 250, 0.5);
+            border-radius: 25px;
+            padding: 40px 50px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(167, 139, 250, 0.4),
+                        inset 0 0 30px rgba(251, 191, 36, 0.05);
+            animation: popup-gentle-fade 0.8s ease;
+            max-width: 90vw;
+        }
+
+        #voucher-popup .aid-animation {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            animation: gentle-zoom 0.8s ease;
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.4),
+                        0 0 50px rgba(251, 191, 36, 0.2);
+            border: 2px solid rgba(167, 139, 250, 0.4);
+        }
+
+        @keyframes popup-gentle-fade {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes gentle-zoom {
+            0% { 
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .voucher-text-container {
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .voucher-title {
+            font-size: 1.8rem;
+            color: #fbbf24;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+            line-height: 1.4;
+        }
+
+        .voucher-info {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+            line-height: 1.6;
+        }
+
+        .voucher-desc {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            margin: 15px 0;
+            font-weight: 500;
+            line-height: 1.6;
+            letter-spacing: 0.02em;
+        }
+
+        .voucher-credit {
+            font-size: 1rem;
+            color: #a78bfa;
+            font-style: italic;
+            letter-spacing: 0.08em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .download-voucher-btn {
+            padding: 12px 30px;
+            background: rgba(167, 139, 250, 0.3);
+            border: 2px solid rgba(167, 139, 250, 0.6);
+            border-radius: 25px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-voucher-btn:hover {
+            background: rgba(167, 139, 250, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            #voucher-popup .aid-content {
+                padding: 30px 20px;
+                border-width: 2px;
+                border-radius: 20px;
+                max-width: 85vw;
+            }
+
+            #voucher-popup .aid-animation {
+                width: 160px;
+                height: 160px;
+                margin-bottom: 15px;
+            }
+
+            .voucher-text-container {
+                padding: 0 5px;
+                margin-bottom: 15px;
+            }
+
+            .voucher-title {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+                word-break: keep-all;
+                line-height: 1.5;
+            }
+
+            .voucher-info {
+                font-size: 0.9rem;
+                margin-bottom: 8px;
+                letter-spacing: 0.03em;
+                word-break: keep-all;
+            }
+
+            .voucher-desc {
+                font-size: 1rem;
+                margin: 12px 0;
+                letter-spacing: 0.02em;
+                word-break: keep-all;
+                line-height: 1.7;
+            }
+
+            .voucher-credit {
+                font-size: 0.85rem;
+                letter-spacing: 0.05em;
+                margin-bottom: 15px;
+                word-break: keep-all;
+                line-height: 1.7;
+            }
+
+            .download-voucher-btn {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
         }
 
         /* 返回按钮 */
@@ -1264,6 +1441,37 @@
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
             font-family: 'Noto Serif SC', serif;
             white-space: pre-wrap;
+            word-break: keep-all;
+            letter-spacing: 0.03em;
+        }
+
+        .skip-intro-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 10px 20px;
+            background: rgba(167, 139, 250, 0.3);
+            border: 2px solid rgba(167, 139, 250, 0.6);
+            border-radius: 25px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            pointer-events: auto;
+        }
+
+        .skip-intro-btn:hover {
+            background: rgba(167, 139, 250, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+            color: #fff;
+        }
+        
+        .skip-intro-btn:active {
+            transform: translateY(0px) scale(0.95);
         }
 
         @media (max-width: 768px) {
@@ -1272,9 +1480,18 @@
                 height: 400px;
             }
 
+            .intro-dialogue-overlay {
+                padding: 30px 15px;
+            }
+
             .intro-dialogue-text {
-                font-size: 0.95rem;
-                padding: 20px;
+                font-size: 0.88rem;
+                line-height: 1.9;
+                letter-spacing: 0.02em;
+                word-break: keep-all;
+                text-align: left;
+                max-width: 100%;
+                overflow-wrap: break-word;
             }
 
             .intro-camera-frame::before,
@@ -1284,6 +1501,13 @@
                 width: 30px;
                 height: 30px;
                 border-width: 3px;
+            }
+
+            .skip-intro-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 8px 16px;
+                font-size: 0.85rem;
             }
         }
 
@@ -1319,6 +1543,8 @@
                     </div>
                 </div>
             </div>
+            <!-- 跳过按钮 -->
+            <button id="skip-intro-btn" class="skip-intro-btn">跳过 ⏭️</button>
         </div>
 
         <!-- 第一幕：摄像机取景框 -->
@@ -1627,9 +1853,7 @@
 
 我不会承诺给你一个完美的世界，因为那不现实。但我可以承诺——无论未来发生什么，镜头里都会有你的位置。
 
-生日快乐。
-
-下次见面的时候...记得笑给我看。</p>
+生日快乐。下次见面的时候...记得笑给我看。</p>
                             </div>
                         </div>
                     </div>
@@ -1675,6 +1899,24 @@
                 <p class="aid-credit">—— 友利奈绪</p>
             </div>
         </div>
+
+        <!-- 彩蛋：无限期陪伴券 -->
+        <div id="voucher-popup">
+            <div class="aid-content">
+                <div class="aid-animation">
+                    <img src="./src/18.gif" alt="无限期陪伴">
+                </div>
+                <div class="voucher-text-container">
+                    <p class="voucher-title">【无限期陪伴券】</p>
+                    <p class="voucher-info">持有者：zj</p>
+                    <p class="voucher-info">发行者：ycx</p>
+                    <p class="voucher-info">效力：无论何时何地</p>
+                    <p class="voucher-desc">此券可兑换"无条件的陪伴"一次</p>
+                    <p class="voucher-credit">就像友利奈绪对乙坂有宇那样。</p>
+                </div>
+                <button id="download-voucher-btn" class="download-voucher-btn">📥 下载陪伴券</button>
+            </div>
+        </div>
     </div>
 
     <!-- 悬浮重入按钮 -->
@@ -1717,7 +1959,7 @@
 
     <div id="top-banner" class="hidden">
         <h1 class="text-6xl md:text-8xl banner-text">Happy Birthday</h1>
-        <p class="text-pink-200/70 text-lg mt-2 tracking-widest uppercase">Best Wishes for You</p>
+        <p class="text-pink-200/70 text-lg mt-4 tracking-widest uppercase">Best Wishes for You</p>
     </div>
 
     <!-- UI 层 -->
@@ -1933,6 +2175,8 @@
             heartfeltAidBtn: document.getElementById('heartfelt-aid-btn'),
             voucherBtn: document.getElementById('voucher-btn'),
             heartfeltAidPopup: document.getElementById('heartfelt-aid-popup'),
+            voucherPopup: document.getElementById('voucher-popup'),
+            downloadVoucherBtn: document.getElementById('download-voucher-btn'),
             musicControlBtn: document.getElementById('music-control-btn'),
             tomoriReturnBtn2: document.getElementById('tomori-return-btn-2'),
             tomoriReEnterBtn: document.getElementById('tomori-re-enter-btn'),
@@ -2046,30 +2290,40 @@
                 ctx.fillText(text, 125, 125);
                 const data = ctx.getImageData(0,0,250,250).data;
                 const step = 2;
+                // 手机端缩小倒计时数字，更精致
+                const textScale = IS_MOBILE ? 1.5 : 2;
                 for(let y=0; y<250; y+=step) {
                     for(let x=0; x<250; x+=step) {
                         if(data[(y*250+x)*4+3]>128) {
-                            points.push({ vec: new THREE.Vector3((x-125)/3.5, -(y-125)/3.5, 0).multiplyScalar(2), type: 'text', color: new THREE.Color(0xffffff) });
+                            points.push({ vec: new THREE.Vector3((x-125)/3.5, -(y-125)/3.5, 0).multiplyScalar(textScale), type: 'text', color: new THREE.Color(0xffffff) });
                         }
                     }
                 }
             } else if (type === 'cake') {
-                const layers = [{y: -16, r: 18, h: 10, type: 'bottom'}, {y: -6,  r: 13, h: 8,  type: 'top'}];
+                // 手机端缩小蛋糕尺寸
+                const scale = IS_MOBILE ? 0.7 : 1.0;
+                const layers = [
+                    {y: -16 * scale, r: 18 * scale, h: 10 * scale, type: 'bottom'}, 
+                    {y: -6 * scale,  r: 13 * scale, h: 8 * scale,  type: 'top'}
+                ];
                 layers.forEach(l => {
-                    for(let i=0; i<(IS_MOBILE?800:1500); i++) {
+                    // 手机端减少蛋糕层粒子，避免过于密集
+                    for(let i=0; i<(IS_MOBILE?600:1500); i++) {
                         const theta = Math.random() * Math.PI * 2;
                         const r = l.r * (0.95 + Math.random()*0.05); 
                         const h = Math.random() * l.h;
                         points.push({ vec: new THREE.Vector3(r*Math.cos(theta), l.y+h, r*Math.sin(theta)), type: 'cake', layer: l.type });
                     }
-                    for(let i=0; i<500; i++) {
+                    // 手机端适当减少奶油粒子
+                    for(let i=0; i<(IS_MOBILE?350:500); i++) {
                         const theta = Math.random() * Math.PI * 2;
                         const r = Math.random() * l.r;
                         points.push({ vec: new THREE.Vector3(r*Math.cos(theta), l.y+l.h, r*Math.sin(theta)), type: 'cake', layer: 'cream' });
                     }
-                    for(let i=0; i<100; i++) {
+                    // 保持装饰颗粒数量，增加炫酷效果
+                    for(let i=0; i<(IS_MOBILE?200:100); i++) {
                         const theta = Math.random() * Math.PI * 2;
-                        const r = l.r + 0.2;
+                        const r = l.r + 0.2 * scale;
                         const h = Math.random() * l.h;
                         const sprinkleColor = new THREE.Color().setHSL(Math.random(), 1, 0.6);
                         points.push({
@@ -2079,18 +2333,22 @@
                     }
                 });
                 const candleY = layers[1].y + layers[1].h;
-                for(let i=0; i<300; i++) {
-                    const h = Math.random() * 12;
-                    const r = Math.random() * 0.8;
+                const candleHeight = 12 * scale;
+                // 手机端适当减少蜡烛粒子
+                for(let i=0; i<(IS_MOBILE?220:300); i++) {
+                    const h = Math.random() * candleHeight;
+                    const r = Math.random() * 0.8 * scale;
                     const theta = Math.random() * Math.PI * 2;
                     let col = (Math.sin(h*1.5 + theta)>0) ? new THREE.Color(0xFF0000) : new THREE.Color(0xFFFFFF);
                     points.push({ vec: new THREE.Vector3(r*Math.cos(theta), candleY+h, r*Math.sin(theta)), type: 'candle', color: col });
                 }
-                const flameY = candleY + 12;
-                for(let i=0; i<400; i++) {
+                const flameY = candleY + candleHeight;
+                const flameHeight = 7 * scale;
+                // 手机端保持火焰粒子，火焰本身就是炫酷效果的重点
+                for(let i=0; i<(IS_MOBILE?350:400); i++) {
                     const u = Math.random();
-                    const h = u * 7;
-                    const r = (1-u) * 2.0 * Math.random();
+                    const h = u * flameHeight;
+                    const r = (1-u) * 2.0 * Math.random() * scale;
                     const theta = Math.random() * Math.PI * 2;
                     let col = new THREE.Color(0xFFA500);
                     if(u<0.2) col.setHex(0x0000FF); else if(u>0.7) col.setHex(0xFF4500);
@@ -2185,11 +2443,15 @@
                     const noise = Math.sin(time * 6 + p.noiseOffset) * 0.6;
                     target.x += noise;
                     if (blowInfluence > 0.1 || currentState === STATE.CELEBRATION) {
-                        let lift = blowInfluence * 25;
-                        if(currentState === STATE.CELEBRATION) lift = 60;
-                        target.y += lift;
-                        target.x += (Math.random()-0.5) * lift * 0.8;
-                        p.targetColor.lerp(new THREE.Color(0xdddddd), 0.1); 
+                        // 火焰从明到暗，不向上飞
+                        const fadeAmount = blowInfluence * 0.8;
+                        if(currentState === STATE.CELEBRATION) {
+                            // 庆祝时完全熄灭消失，变为纯黑色
+                            p.targetColor.set(0x000000);
+                        } else {
+                            // 吹气时逐渐变暗
+                            p.targetColor.lerp(new THREE.Color(0x222222), fadeAmount * 0.3);
+                        }
                     }
                 }
 
@@ -2204,8 +2466,12 @@
                 colors[i*3+2] += (p.targetColor.b - colors[i*3+2]) * 0.1;
 
                 if (p.type === 'flame' && (blowInfluence > 0.1 || currentState === STATE.CELEBRATION)) {
-                    sizes[i] = Math.max(0, 1.5 * (1 - blowInfluence)); 
-                    if(currentState === STATE.CELEBRATION) sizes[i] *= 0.9;
+                    // 吹蜡烛时火焰逐渐缩小并变暗
+                    if(currentState === STATE.CELEBRATION) {
+                        sizes[i] = 0; // 庆祝时完全消失
+                    } else {
+                        sizes[i] = Math.max(0.3, 1.5 * (1 - blowInfluence)); // 吹气时逐渐缩小
+                    }
                 } else {
                     sizes[i] = 1.2 + Math.sin(time + i) * 0.3;
                 }
@@ -2889,6 +3155,7 @@
             const introScene = document.querySelector('#tomori-intro-scene');
             const dialogueText = document.querySelector('.intro-dialogue-text');
             const introFrame = document.querySelector('.intro-camera-frame');
+            const skipBtn = document.querySelector('#skip-intro-btn');
             
             if (!introScene || !dialogueText || !introFrame) return;
             
@@ -2921,10 +3188,46 @@
             // 显示介绍场景
             introScene.style.opacity = '1';
             
-            // 添加点击/触摸事件监听器
-            const handleIntroClick = (e) => {
+            // 跳过按钮功能 - 必须先绑定，确保优先级
+            const handleSkip = (e) => {
+                console.log('🚀 跳过按钮被点击！');
                 e.preventDefault();
                 e.stopPropagation();
+                
+                // 移除所有事件监听器
+                if (skipBtn) {
+                    skipBtn.removeEventListener('click', handleSkip);
+                    skipBtn.removeEventListener('touchend', handleSkip);
+                }
+                
+                // 中止当前动画
+                if (currentTypingAbort) {
+                    currentTypingAbort.aborted = true;
+                }
+                isTypingActive = false;
+                
+                // 立即淡出并进入第二幕
+                introScene.style.opacity = '0';
+                setTimeout(() => {
+                    dialogueText.textContent = '';
+                    currentTypingAbort = null;
+                    transitionToStage2Direct();
+                }, 300);
+            };
+            
+            if (skipBtn) {
+                console.log('✅ 绑定跳过按钮事件');
+                skipBtn.addEventListener('click', handleSkip);
+                skipBtn.addEventListener('touchend', handleSkip);
+            }
+            
+            // 添加点击/触摸事件监听器（但要排除跳过按钮）
+            const handleIntroClick = (e) => {
+                // 如果点击的是跳过按钮，不处理
+                if (e.target.id === 'skip-intro-btn' || e.target.closest('#skip-intro-btn')) {
+                    console.log('检测到点击跳过按钮，不处理intro点击');
+                    return;
+                }
                 
                 if (isTypingCurrentLine) {
                     // 如果正在打字，立即显示完整文字
@@ -2935,8 +3238,8 @@
                 }
             };
             
-            introScene.addEventListener('click', handleIntroClick, true);
-            introScene.addEventListener('touchend', handleIntroClick, true);
+            introScene.addEventListener('click', handleIntroClick);
+            introScene.addEventListener('touchend', handleIntroClick);
             
             // 逐行显示台词
             for (let i = 0; i < tomoriDialogueSequence.length; i++) {
@@ -2971,27 +3274,29 @@
             }
             
             // 移除点击监听器
-            introScene.removeEventListener('click', handleIntroClick, true);
-            introScene.removeEventListener('touchend', handleIntroClick, true);
+            introScene.removeEventListener('click', handleIntroClick);
+            introScene.removeEventListener('touchend', handleIntroClick);
             
-            // 等待0.3秒后开始缩放过渡
-            await new Promise(resolve => setTimeout(resolve, 300));
+            // 移除跳过按钮监听器
+            if (skipBtn) {
+                skipBtn.removeEventListener('click', handleSkip);
+                skipBtn.removeEventListener('touchend', handleSkip);
+            }
             
-            // 缩放过渡
-            introFrame.classList.add('zoom-out');
+            // 等待0.5秒后开始淡出过渡
+            await new Promise(resolve => setTimeout(resolve, 500));
             
-            // 等待缩放动画完成后进入第二幕
+            // 淡出过渡
+            introScene.style.opacity = '0';
+            
+            // 等待淡出动画完成后进入第二幕
             setTimeout(() => {
-                introScene.style.opacity = '0';
-                setTimeout(() => {
-                    // 重置intro场景状态
-                    introFrame.classList.remove('zoom-out');
-                    dialogueText.textContent = '';
-                    isTypingActive = false;
-                    currentTypingAbort = null;
-                    transitionToStage2Direct();
-                }, 500);
-            }, 500);
+                // 重置intro场景状态
+                dialogueText.textContent = '';
+                isTypingActive = false;
+                currentTypingAbort = null;
+                transitionToStage2Direct();
+            }, 800);
         }
 
         // 从第一幕转向友利奈绪介绍场景
@@ -3661,6 +3966,13 @@
                     document.body.style.animation = '';
                 }, 600);
                 
+                // 强制重新加载GIF（从头播放）
+                const gifImg = ui.heartfeltAidPopup.querySelector('.aid-animation img');
+                if (gifImg) {
+                    const originalSrc = gifImg.src.split('?')[0]; // 移除可能存在的时间戳
+                    gifImg.src = originalSrc + '?t=' + Date.now(); // 添加时间戳强制刷新
+                }
+                
                 // 重置动画（强制重新播放）
                 const aidContent = ui.heartfeltAidPopup.querySelector('.aid-content');
                 const aidAnimation = ui.heartfeltAidPopup.querySelector('.aid-animation');
@@ -3683,16 +3995,58 @@
                 ui.heartfeltAidPopup.classList.remove('hidden');
                 ui.heartfeltAidPopup.classList.add('active');
                 
-                // 4秒后关闭弹窗（确保GIF完整播放一次）
+                // 7.2秒后关闭弹窗（确保GIF完整播放一次）
                 setTimeout(() => {
                     ui.heartfeltAidPopup.classList.remove('active');
-                }, 4000);
+                }, 7200);
             });
         }
 
         // 万能兑换券
         if (ui.voucherBtn) {
             ui.voucherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('🎫 无限期陪伴券已触发！');
+                
+                // 强制重新加载GIF（从头播放）
+                const gifImg = ui.voucherPopup.querySelector('.aid-animation img');
+                if (gifImg) {
+                    const originalSrc = gifImg.src.split('?')[0];
+                    gifImg.src = originalSrc + '?t=' + Date.now();
+                }
+                
+                // 重置动画
+                const aidContent = ui.voucherPopup.querySelector('.aid-content');
+                const aidAnimation = ui.voucherPopup.querySelector('.aid-animation');
+                
+                if (aidContent) {
+                    aidContent.style.animation = 'none';
+                    setTimeout(() => {
+                        aidContent.style.animation = '';
+                    }, 10);
+                }
+                
+                if (aidAnimation) {
+                    aidAnimation.style.animation = 'none';
+                    setTimeout(() => {
+                        aidAnimation.style.animation = '';
+                    }, 10);
+                }
+                
+                // 显示弹窗（温柔淡入）
+                ui.voucherPopup.classList.remove('hidden');
+                ui.voucherPopup.classList.add('active');
+                
+                // 5秒后关闭弹窗
+                setTimeout(() => {
+                    ui.voucherPopup.classList.remove('active');
+                }, 5000);
+            });
+        }
+
+        // 下载陪伴券按钮
+        if (ui.downloadVoucherBtn) {
+            ui.downloadVoucherBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 generateVoucher();
             });
@@ -3726,8 +4080,8 @@
             ctx.fillStyle = '#e2e8f0';
             ctx.font = '18px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('持有者：你zj', 300, 150);
-            ctx.fillText('发行者：永远爱你的人ycx', 300, 190);
+            ctx.fillText('持有者：zj', 300, 150);
+            ctx.fillText('发行者：ycx', 300, 190);
             ctx.fillText('效力：无论何时何地', 300, 240);
             ctx.fillText('此券可兑换"无条件的陪伴"一次', 300, 280);
             
@@ -3740,6 +4094,8 @@
             link.href = canvas.toDataURL('image/png');
             link.download = '无限期陪伴券.png';
             link.click();
+            
+            console.log('📥 陪伴券已下载');
         }
 
         // ===== 事件监听器 =====
