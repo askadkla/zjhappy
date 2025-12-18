@@ -564,91 +564,60 @@
             box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* 四角取景框标记 */
-        .stage2-corner-tl {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            border-top: 3px solid rgba(167, 139, 250, 0.6);
-            border-left: 3px solid rgba(167, 139, 250, 0.6);
-        }
-
-        .stage2-corner-tr {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-top: 3px solid rgba(167, 139, 250, 0.6);
-            border-right: 3px solid rgba(167, 139, 250, 0.6);
-        }
-
-        .stage2-corner-bl {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            border-bottom: 3px solid rgba(167, 139, 250, 0.6);
-            border-left: 3px solid rgba(167, 139, 250, 0.6);
-        }
-
+        /* 四角取景框标记 - 已隐藏 */
+        .stage2-corner-tl,
+        .stage2-corner-tr,
+        .stage2-corner-bl,
         .stage2-corner-br {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-bottom: 3px solid rgba(167, 139, 250, 0.6);
-            border-right: 3px solid rgba(167, 139, 250, 0.6);
+            display: none;
         }
 
         /* 第二幕REC指示器 */
         .stage2-rec-indicator {
-            position: fixed;
-            top: 30px;
-            right: 80px;
-            z-index: 45;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 50;
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(251, 191, 36, 0.4);
-            font-size: 14px;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(251, 191, 36, 0.6);
+            font-size: 10px;
             color: #fbbf24;
             font-weight: bold;
             font-family: 'Courier New', monospace;
             pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         }
 
         .stage2-rec-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: #fbbf24;
             border-radius: 50%;
             animation: rec-blink 1s infinite;
-            box-shadow: 0 0 10px #fbbf24;
+            box-shadow: 0 0 8px #fbbf24;
         }
 
         /* 第二幕日期时间显示 */
         .stage2-datetime-display {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 45;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(167, 139, 250, 0.4);
-            font-size: 13px;
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(167, 139, 250, 0.6);
+            font-size: 9px;
             color: #a78bfa;
             font-family: 'Courier New', monospace;
             letter-spacing: 0.05em;
             pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         }
 
         @media (max-width: 768px) {
@@ -734,49 +703,94 @@
             pointer-events: auto;
         }
 
-        /* 拍立得风格卡片 */
+        /* 摄像机取景框风格 */
         .polaroid {
             flex-shrink: 0;
-            width: 180px;
-            height: 220px;
-            background: #fff8f0;
-            padding: 15px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6),
-                        5px 5px 15px rgba(0, 0, 0, 0.3);
-            transform: rotate(-2deg) perspective(1000px) rotateX(1deg);
-            border-radius: 3px;
+            width: 280px;
+            height: 210px;
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            transform: none;
+            border-radius: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            border: 1px solid rgba(255, 200, 150, 0.2);
+            justify-content: center;
+            border: 2px solid rgba(167, 139, 250, 0.5);
+            position: relative;
+            backdrop-filter: blur(2px);
         }
 
-        .story-scene .story-card:nth-child(even) .polaroid {
-            transform: rotate(2deg) perspective(1000px) rotateX(-1deg);
+        /* 摄像机四角标记 */
+        .polaroid::before,
+        .polaroid::after {
+            content: '';
+            position: absolute;
+            border-color: rgba(251, 191, 36, 0.8);
+            border-style: solid;
+            pointer-events: none;
+        }
+        
+        .polaroid::before {
+            top: 8px;
+            left: 8px;
+            width: 30px;
+            height: 30px;
+            border-width: 3px 0 0 3px;
+        }
+        
+        .polaroid::after {
+            top: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            border-width: 3px 3px 0 0;
+        }
+
+        /* 下两个角的标记 */
+        .polaroid-image::before,
+        .polaroid-image::after {
+            content: '';
+            position: absolute;
+            border-color: rgba(251, 191, 36, 0.8);
+            border-style: solid;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .polaroid-image::before {
+            bottom: 8px;
+            left: 8px;
+            width: 30px;
+            height: 30px;
+            border-width: 0 0 3px 3px;
+        }
+        
+        .polaroid-image::after {
+            bottom: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            border-width: 0 3px 3px 0;
         }
 
         .polaroid-image {
             width: 100%;
-            height: 140px;
-            background: linear-gradient(135deg, #fce7f3 0%, #dbeafe 100%);
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
-            border-radius: 2px;
-            margin-bottom: 10px;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
         }
 
         .polaroid-text {
-            font-size: 13px;
-            color: #6b4423;
-            font-weight: bold;
-            text-align: center;
-            font-family: 'Dancing Script', cursive;
-            letter-spacing: 0.05em;
-            word-break: break-word;
+            display: none;
         }
 
         /* 故事文本 */
@@ -862,11 +876,35 @@
             backdrop-filter: blur(20px);
             border: 3px solid rgba(255, 105, 180, 0.8);
             border-radius: 25px;
-            padding: 50px 70px;
+            padding: 40px 50px;
             text-align: center;
             box-shadow: 0 0 80px rgba(255, 105, 180, 0.6),
                         inset 0 0 50px rgba(167, 139, 250, 0.1);
             animation: popup-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 90vw;
+        }
+
+        @media (max-width: 768px) {
+            .aid-content {
+                padding: 30px 25px;
+                border-width: 2px;
+                border-radius: 20px;
+            }
+
+            .aid-animation {
+                width: 150px;
+                height: 150px;
+                margin-bottom: 15px;
+            }
+
+            .aid-text {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .aid-credit {
+                font-size: 0.85rem;
+            }
         }
         
         @keyframes popup-bounce {
@@ -884,10 +922,22 @@
         }
 
         .aid-animation {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            overflow: hidden;
             animation: kick-animation 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.6),
+                        0 0 50px rgba(167, 139, 250, 0.4);
+            border: 2px solid rgba(251, 191, 36, 0.6);
+        }
+
+        .aid-animation img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
         
         @keyframes kick-animation {
@@ -896,11 +946,11 @@
                 opacity: 0;
             }
             60% { 
-                transform: scale(1.4) rotate(15deg) translateX(20px);
+                transform: scale(1.2) rotate(10deg) translateX(15px);
                 opacity: 1;
             }
             80% {
-                transform: scale(0.9) rotate(-5deg) translateX(-10px);
+                transform: scale(0.95) rotate(-3deg) translateX(-5px);
             }
             100% { 
                 transform: scale(1) rotate(0deg) translateX(0);
@@ -1020,6 +1070,189 @@
             }
         }
 
+        /* 友利奈绪介绍过渡场景 */
+        #tomori-intro-scene {
+            position: absolute;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.95);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        #tomori-intro-scene.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .intro-camera-frame {
+            width: 80vw;
+            max-width: 600px;
+            height: 450px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(167, 139, 250, 0.6);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .intro-camera-frame.zoom-out {
+            width: 280px;
+            height: 210px;
+            border: 2px solid rgba(167, 139, 250, 0.5);
+            transform: none;
+            max-width: none;
+        }
+
+        /* 缩放时角标也同步缩小 */
+        .intro-camera-frame.zoom-out::before,
+        .intro-camera-frame.zoom-out::after,
+        .intro-camera-frame.zoom-out .intro-camera-content::before,
+        .intro-camera-frame.zoom-out .intro-camera-content::after {
+            width: 30px;
+            height: 30px;
+            border-width: 3px;
+        }
+
+        .intro-camera-frame.zoom-out::before {
+            top: 8px;
+            left: 8px;
+        }
+
+        .intro-camera-frame.zoom-out::after {
+            top: 8px;
+            right: 8px;
+        }
+
+        .intro-camera-frame.zoom-out .intro-camera-content::before {
+            bottom: 8px;
+            left: 8px;
+        }
+
+        .intro-camera-frame.zoom-out .intro-camera-content::after {
+            bottom: 8px;
+            right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .intro-camera-frame.zoom-out {
+                margin-top: calc(-105px - 30px);
+            }
+        }
+
+        /* 介绍场景四角标记 */
+        .intro-camera-frame::before,
+        .intro-camera-frame::after {
+            content: '';
+            position: absolute;
+            border-color: rgba(251, 191, 36, 0.8);
+            border-style: solid;
+            pointer-events: none;
+        }
+        
+        .intro-camera-frame::before {
+            top: 12px;
+            left: 12px;
+            width: 40px;
+            height: 40px;
+            border-width: 4px 0 0 4px;
+        }
+        
+        .intro-camera-frame::after {
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border-width: 4px 4px 0 0;
+        }
+
+        .intro-camera-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .intro-camera-content::before,
+        .intro-camera-content::after {
+            content: '';
+            position: absolute;
+            border-color: rgba(251, 191, 36, 0.8);
+            border-style: solid;
+            pointer-events: none;
+        }
+        
+        .intro-camera-content::before {
+            bottom: 12px;
+            left: 12px;
+            width: 40px;
+            height: 40px;
+            border-width: 0 0 4px 4px;
+        }
+        
+        .intro-camera-content::after {
+            bottom: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border-width: 0 4px 4px 0;
+        }
+
+        .intro-background-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .intro-dialogue-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+        }
+
+        .intro-dialogue-text {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: left;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+            font-family: 'Noto Serif SC', serif;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 768px) {
+            .intro-camera-frame {
+                width: 90vw;
+                height: 400px;
+            }
+
+            .intro-dialogue-text {
+                font-size: 0.95rem;
+                padding: 20px;
+            }
+
+            .intro-camera-frame::before,
+            .intro-camera-frame::after,
+            .intro-camera-content::before,
+            .intro-camera-content::after {
+                width: 30px;
+                height: 30px;
+                border-width: 3px;
+            }
+        }
+
         /* 底层蛋糕内容淡出效果 */
         body.tomori-mode {
             overflow: hidden;
@@ -1035,6 +1268,25 @@
     
     <!-- 里世界：友利奈绪的祝福宇宙 -->
     <div id="tomori-universe" class="hidden">
+        <!-- 友利奈绪介绍过渡场景 -->
+        <div id="tomori-intro-scene">
+            <div class="intro-camera-frame">
+                <!-- REC指示器 -->
+                <div class="stage2-rec-indicator intro-rec">
+                    <span class="stage2-rec-dot"></span><span>REC</span>
+                </div>
+                <!-- 时间显示 -->
+                <div class="stage2-datetime-display intro-datetime"></div>
+                
+                <div class="intro-camera-content">
+                    <img src="./src/108.jpg" alt="友利奈绪" class="intro-background-image">
+                    <div class="intro-dialogue-overlay">
+                        <div class="intro-dialogue-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 第一幕：摄像机取景框 -->
         <div id="tomori-stage-1" class="tomori-stage">
             <canvas id="tomori-blur-field"></canvas>
@@ -1067,89 +1319,283 @@
                 <div class="stage2-corner-br"></div>
             </div>
             
-            <!-- REC指示器 -->
-            <div class="stage2-rec-indicator">
-                <span class="stage2-rec-dot"></span>
-                <span>REC</span>
-            </div>
-            
-            <!-- 日期时间显示 -->
-            <div class="stage2-datetime-display"></div>
+            <!-- REC指示器 和 日期时间显示 已移至每个polaroid-image内部 -->
             
             <!-- 场景容器 -->
             <div id="tomori-scenes-container" class="scenes-container">
-                <!-- 场景1：取景框 -->
+                <!-- 场景1 -->
                 <div class="story-scene" data-scene="0">
                     <canvas class="scene-starfield"></canvas>
                     <div class="scene-content">
                         <div class="story-card">
                             <div class="polaroid">
-                                <div class="polaroid-image">📹</div>
+                                <div class="polaroid-image"><img src="./src/2.gif" alt="场景1" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
                                 <div class="polaroid-text">The Lens</div>
                             </div>
                             <div class="story-text">
                                 <h3>【取景框】</h3>
-                                <p>友利奈绪习惯透过镜头观察世界，因为这让她保持冷静。
-而我习惯在人群中默默看着你，不仅是为了记录你的笑容，更是为了在你感到世界灰暗的时候，确认你的坐标。
-我不是超能力者，但我会是你最忠实的观众。</p>
+                                <p>（调整焦距）
+
+镜头里的世界总是比现实更清晰一些。透过这个取景框，我记录下了你所有不经意的瞬间——
+
+转笔时微蹙的眉，听歌时放空的眼神，还有那些你以为没人注意到的小表情。
+
+这些画面，我都收藏好了。</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 场景2：耳机 -->
+                <!-- 场景2 -->
                 <div class="story-scene" data-scene="1">
                     <canvas class="scene-starfield"></canvas>
                     <div class="scene-content">
                         <div class="story-card">
                             <div class="polaroid">
-                                <div class="polaroid-image">🎧</div>
+                                <div class="polaroid-image"><img src="./src/3.gif" alt="场景2" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
                                 <div class="polaroid-text">The Frequency</div>
                             </div>
                             <div class="story-text">
                                 <h3>【耳机】</h3>
-                                <p>每个人都有想逃离世界的瞬间，想躲进连帽衫的帽子里，隔绝一切杂音。
-就像有宇在这个不完美的世界上挣扎一样。
-当你累的时候，请把耳机分我一半。我不说话，只陪你听完这首歌。</p>
+                                <p>（递过耳机的另一边）
+
+有时候不需要多余的话，一副耳机就是最好的安慰。
+
+左声道给你，右声道给我。我们可以什么都不说，就这样安静地把这首歌听完。
+
+世界的喧嚣交给我来屏蔽，你只需要专注于旋律。</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 场景3：蛋包饭 -->
+                <!-- 场景3 -->
                 <div class="story-scene" data-scene="2">
                     <canvas class="scene-starfield"></canvas>
                     <div class="scene-content">
                         <div class="story-card">
                             <div class="polaroid">
-                                <div class="polaroid-image">🍚</div>
+                                <div class="polaroid-image"><img src="./src/4.gif" alt="场景3" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
                                 <div class="polaroid-text">The Flavor</div>
                             </div>
                             <div class="story-text">
                                 <h3>【蛋包饭】</h3>
-                                <p>生活不总是甜奶油蛋糕，有时候它像那盘加了秘制披萨酱的蛋包饭，味道有点奇怪，有点酸涩。
-但那是友利笨拙的心意，也是我想给你的承诺：
-无论日子是甜是苦，我都会陪你一口一口吃完。因为只有和你在一起，这些味道才叫'生活'。</p>
+                                <p>（把盘子推过来）
+
+虽然味道可能有点奇怪...但这是我亲手做的。
+
+生活不总是甜的，有时候会像这盘蛋包饭一样，酸涩、笨拙，甚至有些失败。
+
+但即使是这样的日子，只要有人陪你一起吃完，它就变得有意义了。</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 场景4：星空 -->
+                <!-- 场景4 -->
                 <div class="story-scene" data-scene="3">
                     <canvas class="scene-starfield"></canvas>
                     <div class="scene-content">
                         <div class="story-card">
                             <div class="polaroid">
-                                <div class="polaroid-image">⭐</div>
-                                <div class="polaroid-text">The Promise</div>
+                                <div class="polaroid-image"><img src="./src/14.gif" alt="场景4" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Memory</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【回忆】</h3>
+                                <p>（按下快门）
+
+摄像机不会说谎，它只会忠实地记录下每一帧画面。
+
+那天你穿蓝色裙子的样子，阳光洒在你侧脸上的瞬间，还有你笑起来眼睛弯成月牙的模样...
+
+这些珍贵的记忆，我已经全部存档了。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景5 -->
+                <div class="story-scene" data-scene="4">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/15.gif" alt="场景5" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Melody</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【旋律】</h3>
+                                <p>（音量调小一格）
+
+你说过喜欢Aimer的歌，喜欢《StarringChild》里那种温柔又坚定的力量。
+
+我不太懂音乐，但我知道，当旋律响起的时候，你的表情会变得很平静。
+
+所以我会一直在这里，陪你听完每一首歌。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景6 -->
+                <div class="story-scene" data-scene="5">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/16.gif" alt="场景6" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Sunset</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【夕阳】</h3>
+                                <p>（看着远方的天空）
+
+那天的夕阳真的很美，金色的光晕把整个世界都染成了暖色调。
+
+你说想把这一刻永远留住，所以我按下了快门。
+
+虽然照片会褪色，但那个瞬间，已经被刻在了比胶片更可靠的地方——我的记忆里。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景7 -->
+                <div class="story-scene" data-scene="6">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/8.gif" alt="场景7" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Courage</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【勇气】</h3>
+                                <p>（伸出手）
+
+我知道你现在很累，觉得整个世界都在对你施压。
+
+但是听好了——即使你倒下了，我也会把你扶起来。即使全世界都背对你，我也会站在你这边。
+
+因为这是我的决定，不需要理由。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景8 -->
+                <div class="story-scene" data-scene="7">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/9.gif" alt="场景8" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Warmth</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【温暖】</h3>
+                                <p>（递过毛毯）
+
+我不擅长说那些温暖的话，也做不出完美的料理。
+
+但如果你需要一个避风的地方，我可以挡在你前面。如果你需要有人陪，我就坐在你旁边不说话。
+
+笨拙一点没关系，至少是真心的。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景9 -->
+                <div class="story-scene" data-scene="8">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/10.gif" alt="场景9" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Silence</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【沉默】</h3>
+                                <p>（静静坐在旁边）
+
+有些时刻，不需要任何语言。
+
+就像镜头后的我，不会追问你为什么心情不好，只会默默记录下你的侧脸，然后把摄像机放下，坐在你身边。
+
+陪伴本身，就是最好的答案。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景10 -->
+                <div class="story-scene" data-scene="9">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/11.gif" alt="场景10" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Dream</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【梦想】</h3>
+                                <p>（放下摄像机）
+
+这个世界没有超能力，我无法掠夺你的痛苦，也改变不了既定的命运。
+
+但我可以做到的是——在每一个平凡的日子里，记录下你的笑容；在每一个艰难的时刻，站在你身后。
+
+这就是我的「能力」。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景11 -->
+                <div class="story-scene" data-scene="10">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/12.gif" alt="场景11" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Stars</div>
                             </div>
                             <div class="story-text">
                                 <h3>【星空】</h3>
-                                <p>在这个没有超能力的现实世界里，我没法为你掠夺全世界的疾病和痛苦。
-但我向你承诺：
-在你失落低谷时，我会像那天夕阳下的友利奈绪一样，坚定地站在你身后。
-生日快乐。我们的故事，未完待续。</p>
+                                <p>（抬头看天空）
+
+你说过，每一颗星星都代表一个愿望。
+
+如果真是这样，那我的愿望很简单——希望你能一直保持现在这样，自由地笑，认真地活着。
+
+虽然听起来有点老套...但这就是我想记录的「珍贵回忆」。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景12 -->
+                <div class="story-scene" data-scene="11">
+                    <canvas class="scene-starfield"></canvas>
+                    <div class="scene-content">
+                        <div class="story-card">
+                            <div class="polaroid">
+                                <div class="polaroid-image"><img src="./src/13.gif" alt="场景12" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                                <div class="polaroid-text">The Promise</div>
+                            </div>
+                            <div class="story-text">
+                                <h3>【承诺】</h3>
+                                <p>（收起摄像机，认真地看着你）
+
+录了这么久，该说的也都说了。
+
+我不会承诺给你一个完美的世界，因为那不现实。但我可以承诺——无论未来发生什么，镜头里都会有你的位置。
+
+生日快乐。
+
+下次见面的时候...记得笑给我看。</p>
                             </div>
                         </div>
                     </div>
@@ -1162,6 +1608,14 @@
                 <span class="nav-dot" data-scene="1"></span>
                 <span class="nav-dot" data-scene="2"></span>
                 <span class="nav-dot" data-scene="3"></span>
+                <span class="nav-dot" data-scene="4"></span>
+                <span class="nav-dot" data-scene="5"></span>
+                <span class="nav-dot" data-scene="6"></span>
+                <span class="nav-dot" data-scene="7"></span>
+                <span class="nav-dot" data-scene="8"></span>
+                <span class="nav-dot" data-scene="9"></span>
+                <span class="nav-dot" data-scene="10"></span>
+                <span class="nav-dot" data-scene="11"></span>
             </div>
 
             <!-- 彩蛋按钮 -->
@@ -1180,7 +1634,9 @@
         <!-- 彩蛋：心情急救包动画 -->
         <div id="heartfelt-aid-popup">
             <div class="aid-content">
-                <div class="aid-animation">💥 飞踢 💥</div>
+                <div class="aid-animation">
+                    <img src="./src/17.gif" alt="友利奈绪飞踢">
+                </div>
                 <p class="aid-text">笨蛋！不准丧！给我打起精神来！</p>
                 <p class="aid-credit">—— 友利奈绪</p>
             </div>
@@ -1315,7 +1771,7 @@
 
                         <!-- 第二页：快递信息 (纯文字，带滚动) -->
                         <div id="card-page-2" class="w-full h-full flex flex-col hidden">
-                            <h3 class="text-xl font-bold text-purple-300 mb-4 font-handwriting text-center mt-2">一点小小的歉意</h3>
+                            <h3 class="text-xl font-bold text-purple-300 mb-4 font-handwriting text-center mt-2">祝你天天开心</h3>
                             <!-- 滚动区域 -->
                             <div id="typewriter-text-2" class="text-left text-gray-200 space-y-3 font-light leading-6 text-sm md:text-base border-l-2 border-purple-500/50 pl-4 mb-4 flex-grow scrollable-text h-full"></div>
                             
@@ -1839,11 +2295,11 @@
             "陈路周说，夏天是用来相遇的。",
             "那天你穿了蓝色的裙子，",
             "我觉得天气很好。",
-            "你的生日是用来提醒这个世界的。",
+            "祝你笑口常开，健康无灾。",
             "",
             "哪怕友利奈绪的摄像机没电了，",
             "哪怕星星都睡着了，",
-            "你依然是这里最值得被记录的风景",
+            "你依然是这里最值得被记录的风景。",
             "",
             "希望你喜欢这个小小的Surprise！🎉🎂🎈"
         ];
@@ -2272,9 +2728,21 @@
                 ui.datetimeDisplay.textContent = dateTimeStr;
             }
             
-            // 更新第二幕的日期时间
+            // 更新第二幕的日期时间（原有的固定位置）
             if (ui.stage2DatetimeDisplay) {
                 ui.stage2DatetimeDisplay.textContent = dateTimeStr;
+            }
+            
+            // 更新所有polaroid内的时间显示
+            const allDatetimeDisplays = document.querySelectorAll('.polaroid .stage2-datetime-display');
+            allDatetimeDisplays.forEach(display => {
+                display.textContent = dateTimeStr;
+            });
+            
+            // 更新intro场景的时间显示
+            const introDatetime = document.querySelector('.intro-datetime');
+            if (introDatetime) {
+                introDatetime.textContent = dateTimeStr;
             }
         }
 
@@ -2337,17 +2805,178 @@
             return isVGesture;
         }
 
-        // 从第一幕转向第二幕
+        // 友利奈绪台词序列
+        const tomoriDialogueSequence = [
+            "(清嗓子) 喂——听得到吗？嗯，REC灯亮了。",
+            "(叹了口气，把散落的头发别到耳后) 真是的……因为某人拜托我一定要录这段视频，我就破例一次好了。",
+            "(眼神突然变得认真，凑近镜头) 虽然不知道你现在在哪里，在经历着什么……但在今天这个日子，我允许你稍微放松一下。",
+            "(嘴角微微上扬，露出一闪而过的温柔笑容) 去吃点好吃的，去听喜欢的歌，去创造属于你的'珍贵回忆'吧。"
+        ];
+
+        // 打字机动画控制标志
+        let isTypingActive = false;
+        let currentTypingAbort = null;
+        let currentDialogueIndex = 0;
+        let isTypingCurrentLine = false;
+        let skipCurrentTyping = false;
+        let skipWaiting = false;
+
+        // 打字机效果（支持点击跳过）
+        async function typewriterEffect(element, text, speed = 30) {
+            element.textContent = '';
+            isTypingCurrentLine = true;
+            skipCurrentTyping = false;
+            
+            for (let i = 0; i < text.length; i++) {
+                // 检查是否需要跳过到完整文字
+                if (skipCurrentTyping) {
+                    element.textContent = text;
+                    isTypingCurrentLine = false;
+                    return;
+                }
+                
+                // 检查是否需要中止
+                if (currentTypingAbort && currentTypingAbort.aborted) {
+                    isTypingCurrentLine = false;
+                    return;
+                }
+                element.textContent += text[i];
+                await new Promise(resolve => setTimeout(resolve, speed));
+            }
+            
+            isTypingCurrentLine = false;
+        }
+
+        // 显示友利奈绪介绍过渡场景
+        async function showIntroScene() {
+            const introScene = document.querySelector('#tomori-intro-scene');
+            const dialogueText = document.querySelector('.intro-dialogue-text');
+            const introFrame = document.querySelector('.intro-camera-frame');
+            
+            if (!introScene || !dialogueText || !introFrame) return;
+            
+            // 如果已经在播放动画，先彻底终止
+            if (isTypingActive) {
+                if (currentTypingAbort) {
+                    currentTypingAbort.aborted = true;
+                }
+                isTypingActive = false;
+                currentTypingAbort = null;
+                // 等待旧动画完全停止
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // 创建新的中止控制器
+            currentTypingAbort = { aborted: false };
+            isTypingActive = true;
+            
+            // 完全重置intro场景状态
+            introFrame.classList.remove('zoom-out');
+            dialogueText.textContent = '';
+            introScene.style.opacity = '0';
+            
+            // 短暂延迟确保DOM更新
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            // 更新intro场景的时间显示
+            updateDateTimeDisplay();
+            
+            // 显示介绍场景
+            introScene.style.opacity = '1';
+            
+            // 添加点击/触摸事件监听器
+            const handleIntroClick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (isTypingCurrentLine) {
+                    // 如果正在打字，立即显示完整文字
+                    skipCurrentTyping = true;
+                } else {
+                    // 如果当前行已完成，跳过等待时间
+                    skipWaiting = true;
+                }
+            };
+            
+            introScene.addEventListener('click', handleIntroClick, true);
+            introScene.addEventListener('touchend', handleIntroClick, true);
+            
+            // 逐行显示台词
+            for (let i = 0; i < tomoriDialogueSequence.length; i++) {
+                currentDialogueIndex = i;
+                skipWaiting = false;
+                
+                // 检查是否被中止
+                if (currentTypingAbort && currentTypingAbort.aborted) {
+                    introScene.removeEventListener('click', handleIntroClick, true);
+                    introScene.removeEventListener('touchend', handleIntroClick, true);
+                    return;
+                }
+                
+                // 显示当前台词
+                await typewriterEffect(dialogueText, tomoriDialogueSequence[i], 30);
+                
+                // 检查是否被中止
+                if (currentTypingAbort && currentTypingAbort.aborted) {
+                    introScene.removeEventListener('click', handleIntroClick, true);
+                    introScene.removeEventListener('touchend', handleIntroClick, true);
+                    return;
+                }
+                
+                // 如果不是最后一行，等待0.5秒（除非点击跳过）
+                if (i < tomoriDialogueSequence.length - 1) {
+                    const waitStart = Date.now();
+                    while (Date.now() - waitStart < 500) {
+                        if (skipWaiting) break;
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                    }
+                }
+            }
+            
+            // 移除点击监听器
+            introScene.removeEventListener('click', handleIntroClick, true);
+            introScene.removeEventListener('touchend', handleIntroClick, true);
+            
+            // 等待0.3秒后开始缩放过渡
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            // 缩放过渡
+            introFrame.classList.add('zoom-out');
+            
+            // 等待缩放动画完成后进入第二幕
+            setTimeout(() => {
+                introScene.style.opacity = '0';
+                setTimeout(() => {
+                    // 重置intro场景状态
+                    introFrame.classList.remove('zoom-out');
+                    dialogueText.textContent = '';
+                    isTypingActive = false;
+                    currentTypingAbort = null;
+                    transitionToStage2Direct();
+                }, 500);
+            }, 500);
+        }
+
+        // 从第一幕转向友利奈绪介绍场景
         function transitionToStage2() {
             ui.tomoriStage1.classList.add('hidden');
-            ui.tomoriStage2.classList.remove('hidden');
-            tomoriCurrentStage = 2;
-
+            
             // 切换音乐
             if (bgm.src && !bgm.src.includes('danxiangsi.mp3')) {
                 bgm.pause();
                 bgm.currentTime = 0;
             }
+            
+            // 显示介绍过渡场景
+            setTimeout(() => {
+                showIntroScene();
+            }, 300);
+        }
+
+        // 友利奈绪介绍场景 -> 第二幕直接转场
+        function transitionToStage2Direct() {
+            ui.tomoriStage2.classList.remove('hidden');
+            tomoriCurrentStage = 2;
             
             // 初始化星空和故事卡片
             setTimeout(() => {
@@ -2361,6 +2990,26 @@
         let cameraProgressZ = 0;
         let targetCameraProgressZ = 0;
         
+        // 为每个polaroid添加REC和时间显示
+        function addCamcorderOverlayToPolaroids() {
+            const polaroids = document.querySelectorAll('.polaroid');
+            polaroids.forEach((polaroid, index) => {
+                // 避免重复添加
+                if (polaroid.querySelector('.stage2-rec-indicator')) return;
+                
+                // 添加REC指示器
+                const recIndicator = document.createElement('div');
+                recIndicator.className = 'stage2-rec-indicator';
+                recIndicator.innerHTML = '<span class="stage2-rec-dot"></span><span>REC</span>';
+                polaroid.appendChild(recIndicator);
+                
+                // 添加时间显示
+                const datetimeDisplay = document.createElement('div');
+                datetimeDisplay.className = 'stage2-datetime-display';
+                polaroid.appendChild(datetimeDisplay);
+            });
+        }
+        
         function initMainStarfield() {
             // 获取所有场景容器和Canvas元素
             const scenes = document.querySelectorAll('.story-scene');
@@ -2370,6 +3019,18 @@
                 console.warn('未找到场景Canvas元素');
                 return;
             }
+            
+            // 如果已经初始化过，先清理旧的动画
+            if (window.starfields && window.starfields.length > 0) {
+                window.starfields.forEach(field => {
+                    if (field.animationId) {
+                        cancelAnimationFrame(field.animationId);
+                    }
+                });
+            }
+            
+            // 为所有polaroid-image添加摄像机覆盖层
+            addCamcorderOverlayToPolaroids();
 
             // 为每个Canvas初始化星空
             const starfields = [];
@@ -2381,14 +3042,31 @@
                 const stars = [];
                 
                 // 为每个场景创建独立的星星
-                for (let i = 0; i < 300; i++) {
+                for (let i = 0; i < 500; i++) {
+                    const depth = Math.random(); // 0-1，0是远处，1是近处
+                    const starType = Math.random();
+                    let color;
+                    
+                    // 星星颜色分布：70%白色，20%蓝色，10%紫色
+                    if (starType < 0.7) {
+                        color = { r: 226, g: 232, b: 240 }; // 白色
+                    } else if (starType < 0.9) {
+                        color = { r: 147, g: 197, b: 253 }; // 蓝色
+                    } else {
+                        color = { r: 196, g: 181, b: 253 }; // 紫色
+                    }
+                    
                     stars.push({
                         x: Math.random() * canvas.width,
                         y: Math.random() * canvas.height,
-                        radius: Math.random() * 1.5,
-                        opacity: Math.random() * 0.7 + 0.3,
-                        twinkleSpeed: Math.random() * 0.03 + 0.01,
-                        baseOpacity: Math.random() * 0.7 + 0.3
+                        radius: (Math.random() * 1.2 + 0.3) * (0.5 + depth * 0.8), // 近处星星更大
+                        opacity: Math.random() * 0.6 + 0.4,
+                        twinkleSpeed: (Math.random() * 0.02 + 0.005) * (0.8 + depth * 0.4),
+                        baseOpacity: Math.random() * 0.6 + 0.4,
+                        color: color,
+                        depth: depth,
+                        vx: (Math.random() - 0.5) * 0.1 * depth, // 近处星星移动更快
+                        vy: (Math.random() - 0.5) * 0.1 * depth
                     });
                 }
                 
@@ -2418,8 +3096,15 @@
             const { canvas, ctx, stars, sceneIndex } = field;
             const isActive = sceneIndex === currentNodeIndex;
             
-            // 清晰的背景
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.1)';
+            // 深邃的星空背景渐变
+            const bgGradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, canvas.width * 0.8
+            );
+            bgGradient.addColorStop(0, 'rgba(15, 23, 42, 0.05)');
+            bgGradient.addColorStop(0.5, 'rgba(15, 23, 42, 0.08)');
+            bgGradient.addColorStop(1, 'rgba(10, 15, 30, 0.12)');
+            ctx.fillStyle = bgGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // 绘制彗星轨迹
@@ -2484,13 +3169,42 @@
                 ctx.fill();
             }
 
-            // 绘制星星 - 闪烁效果
+            // 绘制星星 - 闪烁和漂移效果
             stars.forEach((star) => {
+                // 柔和的闪烁
                 star.opacity += star.twinkleSpeed;
-                if (star.opacity > 1 || star.opacity < 0.3) star.twinkleSpeed *= -1;
+                if (star.opacity > star.baseOpacity + 0.4 || star.opacity < star.baseOpacity - 0.3) {
+                    star.twinkleSpeed *= -1;
+                }
+                
+                // 缓慢漂移
+                star.x += star.vx;
+                star.y += star.vy;
+                
+                // 边界处理（循环）
+                if (star.x < 0) star.x = canvas.width;
+                if (star.x > canvas.width) star.x = 0;
+                if (star.y < 0) star.y = canvas.height;
+                if (star.y > canvas.height) star.y = 0;
 
-                const starOpacity = isActive ? star.opacity : star.opacity * 0.5;
-                ctx.fillStyle = `rgba(226, 232, 240, ${Math.min(1, starOpacity)})`;
+                const starOpacity = isActive ? star.opacity : star.opacity * 0.6;
+                
+                // 为较大的星星添加光晕
+                if (star.radius > 1 && star.depth > 0.6) {
+                    const haloGradient = ctx.createRadialGradient(
+                        star.x, star.y, 0,
+                        star.x, star.y, star.radius * 3
+                    );
+                    haloGradient.addColorStop(0, `rgba(${star.color.r}, ${star.color.g}, ${star.color.b}, ${starOpacity * 0.3})`);
+                    haloGradient.addColorStop(1, `rgba(${star.color.r}, ${star.color.g}, ${star.color.b}, 0)`);
+                    ctx.fillStyle = haloGradient;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 星星主体
+                ctx.fillStyle = `rgba(${star.color.r}, ${star.color.g}, ${star.color.b}, ${Math.min(1, starOpacity)})`;
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
                 ctx.fill();
@@ -2528,15 +3242,23 @@
 
         // 激活故事卡片节点 - 场景切换
         function activateNode(index) {
-            const newIndex = Math.max(0, Math.min(index, 3));
+            const newIndex = Math.max(0, Math.min(index, 11));
             if (newIndex === currentNodeIndex) return;
             
             currentNodeIndex = newIndex;
             updateSceneVisibility();
         }
 
+        // 事件监听器存储，防止重复注册
+        let interactionListenersAdded = false;
+        
         // 处理故事卡片的滚轮和滑动 - 带节流防止快速切换
         function setupStoryCardInteraction() {
+            // 如果已经注册过，直接返回
+            if (interactionListenersAdded) {
+                return;
+            }
+            
             let touchStartX = 0;
             let touchStartY = 0;
             let isTransitioning = false;
@@ -2566,7 +3288,7 @@
                 
                 // 优先检测横向滚动
                 if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (deltaX > 0 && currentNodeIndex < 3) {
+                    if (deltaX > 0 && currentNodeIndex < 11) {
                         isTransitioning = true;
                         activateNode(currentNodeIndex + 1);
                         setTimeout(() => { isTransitioning = false; }, transitionDelay);
@@ -2577,7 +3299,7 @@
                     }
                 } else {
                     // 纵向滚动也支持（向下=下一个，向上=上一个）
-                    if (deltaY > 0 && currentNodeIndex < 3) {
+                    if (deltaY > 0 && currentNodeIndex < 11) {
                         isTransitioning = true;
                         activateNode(currentNodeIndex + 1);
                         setTimeout(() => { isTransitioning = false; }, transitionDelay);
@@ -2594,7 +3316,7 @@
                 if (!tomoriMode || tomoriCurrentStage !== 2) return;
                 if (isTransitioning) return;
                 
-                if (e.key === 'ArrowRight' && currentNodeIndex < 3) {
+                if (e.key === 'ArrowRight' && currentNodeIndex < 11) {
                     isTransitioning = true;
                     activateNode(currentNodeIndex + 1);
                     setTimeout(() => { isTransitioning = false; }, transitionDelay);
@@ -2625,7 +3347,7 @@
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     // 横向滑动
                     if (Math.abs(diffX) > swipeThreshold) {
-                        if (diffX > 0 && currentNodeIndex < 3) {
+                        if (diffX > 0 && currentNodeIndex < 11) {
                             // 向左滑 = 下一个场景
                             isTransitioning = true;
                             activateNode(currentNodeIndex + 1);
@@ -2640,7 +3362,7 @@
                 } else {
                     // 纵向滑动（保留原有逻辑）
                     if (Math.abs(diffY) > swipeThreshold) {
-                        if (diffY > 0 && currentNodeIndex < 3) {
+                        if (diffY > 0 && currentNodeIndex < 11) {
                             // 向上滑 = 下一个场景
                             isTransitioning = true;
                             activateNode(currentNodeIndex + 1);
@@ -2682,7 +3404,7 @@
                 const diffX = mouseStartX - mouseEndX;
                 
                 if (Math.abs(diffX) > swipeThreshold) {
-                    if (diffX > 0 && currentNodeIndex < 3) {
+                    if (diffX > 0 && currentNodeIndex < 11) {
                         // 向左拖 = 下一个场景
                         isTransitioning = true;
                         activateNode(currentNodeIndex + 1);
@@ -2695,6 +3417,9 @@
                     }
                 }
             });
+            
+            // 标记事件监听器已注册
+            interactionListenersAdded = true;
         }
 
         let autoEnterTimer = null;
@@ -2964,14 +3689,14 @@
             ctx.fillStyle = '#e2e8f0';
             ctx.font = '18px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('持有者：你', 300, 150);
-            ctx.fillText('发行者：永远爱你的人', 300, 190);
+            ctx.fillText('持有者：你zj', 300, 150);
+            ctx.fillText('发行者：永远爱你的人ycx', 300, 190);
             ctx.fillText('效力：无论何时何地', 300, 240);
             ctx.fillText('此券可兑换"无条件的陪伴"一次', 300, 280);
             
             ctx.fillStyle = '#a78bfa';
             ctx.font = 'italic 16px Arial';
-            ctx.fillText('就像友利对有宇那样。', 300, 340);
+            ctx.fillText('就像友利奈绪对乙坂有宇那样。', 300, 340);
 
             // 下载
             const link = document.createElement('a');
