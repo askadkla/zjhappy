@@ -2344,7 +2344,7 @@
             tomoriCurrentStage = 2;
 
             // 切换音乐
-            if (bgm.src && !bgm.src.includes('Kataomoi.mp3')) {
+            if (bgm.src && !bgm.src.includes('danxiangsi.mp3')) {
                 bgm.pause();
                 bgm.currentTime = 0;
             }
@@ -2537,9 +2537,11 @@
 
         // 处理故事卡片的滚轮和滑动 - 带节流防止快速切换
         function setupStoryCardInteraction() {
+            let touchStartX = 0;
             let touchStartY = 0;
             let isTransitioning = false;
             const transitionDelay = 800; // 毫秒
+            const swipeThreshold = 50; // 滑动阈值（像素）
             
             // 导航点点击事件
             const navDots = document.querySelectorAll('.nav-dot');
@@ -2553,48 +2555,146 @@
                 });
             });
             
-            // 滚轮事件
+            // 滚轮事件 - 左右滚动切换场景
             ui.tomoriStage2.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 if (isTransitioning) return;
                 
-                if (e.deltaY > 0 && currentNodeIndex < 3) {
+                // 支持横向滚动（Shift + 滚轮 或 触摸板横向滑动）
+                const deltaX = e.deltaX;
+                const deltaY = e.deltaY;
+                
+                // 优先检测横向滚动
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (deltaX > 0 && currentNodeIndex < 3) {
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex + 1);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    } else if (deltaX < 0 && currentNodeIndex > 0) {
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex - 1);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    }
+                } else {
+                    // 纵向滚动也支持（向下=下一个，向上=上一个）
+                    if (deltaY > 0 && currentNodeIndex < 3) {
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex + 1);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    } else if (deltaY < 0 && currentNodeIndex > 0) {
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex - 1);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    }
+                }
+            }, { passive: false });
+
+            // 键盘左右箭头支持
+            const handleKeyPress = (e) => {
+                if (!tomoriMode || tomoriCurrentStage !== 2) return;
+                if (isTransitioning) return;
+                
+                if (e.key === 'ArrowRight' && currentNodeIndex < 3) {
                     isTransitioning = true;
                     activateNode(currentNodeIndex + 1);
                     setTimeout(() => { isTransitioning = false; }, transitionDelay);
-                } else if (e.deltaY < 0 && currentNodeIndex > 0) {
+                } else if (e.key === 'ArrowLeft' && currentNodeIndex > 0) {
                     isTransitioning = true;
                     activateNode(currentNodeIndex - 1);
                     setTimeout(() => { isTransitioning = false; }, transitionDelay);
                 }
-            }, { passive: false });
+            };
+            document.addEventListener('keydown', handleKeyPress);
 
-            // 触摸事件
+            // 触摸事件 - 支持左右滑动
             ui.tomoriStage2.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
             }, { passive: true });
 
-            ui.tomoriStage2.addEventListener('touchmove', (e) => {
+            ui.tomoriStage2.addEventListener('touchend', (e) => {
                 if (isTransitioning) return;
                 
-                const touchCurrentY = e.touches[0].clientY;
-                const threshold = 60;
-                const diff = touchStartY - touchCurrentY;
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
                 
-                if (Math.abs(diff) > threshold) {
-                    if (diff > 0 && currentNodeIndex < 3) {
-                        isTransitioning = true;
-                        activateNode(currentNodeIndex + 1);
-                        touchStartY = touchCurrentY;
-                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
-                    } else if (diff < 0 && currentNodeIndex > 0) {
-                        isTransitioning = true;
-                        activateNode(currentNodeIndex - 1);
-                        touchStartY = touchCurrentY;
-                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                const diffX = touchStartX - touchEndX;
+                const diffY = touchStartY - touchEndY;
+                
+                // 判断是横向滑动还是纵向滑动
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    // 横向滑动
+                    if (Math.abs(diffX) > swipeThreshold) {
+                        if (diffX > 0 && currentNodeIndex < 3) {
+                            // 向左滑 = 下一个场景
+                            isTransitioning = true;
+                            activateNode(currentNodeIndex + 1);
+                            setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                        } else if (diffX < 0 && currentNodeIndex > 0) {
+                            // 向右滑 = 上一个场景
+                            isTransitioning = true;
+                            activateNode(currentNodeIndex - 1);
+                            setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                        }
+                    }
+                } else {
+                    // 纵向滑动（保留原有逻辑）
+                    if (Math.abs(diffY) > swipeThreshold) {
+                        if (diffY > 0 && currentNodeIndex < 3) {
+                            // 向上滑 = 下一个场景
+                            isTransitioning = true;
+                            activateNode(currentNodeIndex + 1);
+                            setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                        } else if (diffY < 0 && currentNodeIndex > 0) {
+                            // 向下滑 = 上一个场景
+                            isTransitioning = true;
+                            activateNode(currentNodeIndex - 1);
+                            setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                        }
                     }
                 }
             }, { passive: true });
+
+            // 鼠标拖拽支持（PC端）
+            let mouseStartX = 0;
+            let isDraggingScene = false;
+            
+            ui.tomoriStage2.addEventListener('mousedown', (e) => {
+                // 忽略按钮点击
+                if (e.target.closest('button') || e.target.closest('.nav-dot')) return;
+                
+                mouseStartX = e.clientX;
+                isDraggingScene = true;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDraggingScene) return;
+                // 可以在这里添加拖拽视觉反馈
+            });
+
+            document.addEventListener('mouseup', (e) => {
+                if (!isDraggingScene) return;
+                isDraggingScene = false;
+                
+                if (isTransitioning) return;
+                
+                const mouseEndX = e.clientX;
+                const diffX = mouseStartX - mouseEndX;
+                
+                if (Math.abs(diffX) > swipeThreshold) {
+                    if (diffX > 0 && currentNodeIndex < 3) {
+                        // 向左拖 = 下一个场景
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex + 1);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    } else if (diffX < 0 && currentNodeIndex > 0) {
+                        // 向右拖 = 上一个场景
+                        isTransitioning = true;
+                        activateNode(currentNodeIndex - 1);
+                        setTimeout(() => { isTransitioning = false; }, transitionDelay);
+                    }
+                }
+            });
         }
 
         let autoEnterTimer = null;
@@ -2608,7 +2708,7 @@
             console.log("🌌 进入Tomori模式 - 第一幕已开启");
             console.log("📹 请对摄像头比V手势以对焦（10秒后自动进入）");
 
-            // 切换到Kataomoi.mp3音乐
+            // 切换到danxiangsi.mp3音乐
             switchToTomoriMusic();
 
             // 显示友利宇宙
@@ -2726,18 +2826,18 @@
         let isMusicPlaying = true;
         
         function switchToTomoriMusic() {
-            console.log('🎵 切换音乐到 Kataomoi.mp3');
+            console.log('🎵 切换音乐到 danxiangsi.mp3');
             
             // 暂停当前音乐
             bgm.pause();
             
-            // 切换到Kataomoi.mp3
-            bgm.src = './src/Kataomoi.mp3';
+            // 切换到danxiangsi.mp3
+            bgm.src = './src/danxiangsi.mp3';
             bgm.load();
             
             // 播放新音乐
             bgm.play().then(() => {
-                console.log('✅ Kataomoi.mp3 已开始播放');
+                console.log('✅ danxiangsi.mp3 已开始播放');
                 isMusicPlaying = true;
                 updateMusicButtonState();
             }).catch(err => {
