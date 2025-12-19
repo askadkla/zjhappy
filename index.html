@@ -255,6 +255,15 @@
             background: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.8);
         }
 
+        /* 手机端按钮居中 */
+        @media (max-width: 768px) {
+            .tomori-btn {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
         /* 悬浮重入按钮 */
         #tomori-re-enter-btn {
             position: fixed; bottom: 100px; right: 30px; z-index: 200;
@@ -1703,7 +1712,7 @@
                                 <h3>【取景框】</h3>
                                 <p>（调整焦距）
 
-镜头里的世界总是比现实更清晰一些。透过这个取景框，我记录下了你所有不经意的瞬间——
+镜头里的世界总是比现实更清晰一些。透过这个取景框，我友利奈绪记录下了你所有不经意的瞬间——
 
 转笔时微蹙的眉，听歌时放空的眼神，还有那些你以为没人注意到的小表情。
 
@@ -1771,12 +1780,10 @@
                             <div class="story-text">
                                 <h3>【回忆】</h3>
                                 <p>（按下快门）
-
-摄像机不会说谎，它只会忠实地记录下每一帧画面。
-
-那天你穿粉色裙子的样子，阳光洒在你侧脸上的瞬间，还有你笑起来眼睛弯成月牙的模样...
-
-这些珍贵的记忆，我已经全部存档了。</p>
+摄像机从不说谎，它只记录最客观的真实。
+那天你穿的那条粉色裙子，连同当时那种毫无杂质的笑容，构成了我在取景器里见过的最佳画面。
+这种发自内心的生命力，才是这里最值得被保留的素材。
+我已经把这份快乐完整存档了。以后如果累了，记得翻出来看看，找回当时的状态。</p>
                             </div>
                         </div>
                     </div>
@@ -1792,14 +1799,12 @@
                                 <div class="polaroid-text">The Melody</div>
                             </div>
                             <div class="story-text">
-                                <h3>【旋律】</h3>
-                                <p>（音量调小一格）
-
-你说过喜欢Aimer的歌，喜欢《六等星の夜》里那种温柔又坚定的力量。
-
-我不太懂音乐，但我知道，当旋律响起的时候，你的表情会变得很平静。
-
-所以我会一直在这里，陪你听完每一首歌。</p>
+<h3>【斗志】</h3>
+<p>（把一只耳机塞进你耳朵里）
+你说过Aimer的歌声能让你平静，但在我看来，这旋律里藏着不服输的韧劲。
+听歌可不是为了躲在角落里舔舐伤口，而是为了给即将熄灭的斗志重新点火。
+在这个残酷的世界里，唯有变强才是生存之道。
+我会陪你听完这首歌。但在摘下耳机的那一刻，我要看到那个眼神犀利、准备好反击的你。</p>
                             </div>
                         </div>
                     </div>
@@ -1815,14 +1820,13 @@
                                 <div class="polaroid-text">The Sunset</div>
                             </div>
                             <div class="story-text">
-                                <h3>【夕阳】</h3>
-                                <p>（看着远方的天空）
+                                <h3>【健康】</h3>
+                                <p>（举起报告单，眉头微皱）
+别以为我没发现，你的笑容里藏着疲惫。
+一直在逞强可不是什么值得夸耀的超能力，那是笨蛋才会做的事。
 
-那天的夕阳真的很美，金色的光晕把整个世界都染成了暖色调。
-
-你说想把这一刻永远留住，所以我按下了快门。
-
-虽然照片会褪色，但那个瞬间，已经被刻在了比胶片更可靠的地方——我的记忆里。</p>
+听好了，这是来自学生会长的特别警告：
+立刻停止你的过度努力。今晚的任务只有一个——给我好好睡觉，不许反驳。</p>
                             </div>
                         </div>
                     </div>
@@ -1955,12 +1959,10 @@
                             <div class="story-text">
                                 <h3>【承诺】</h3>
                                 <p>（收起摄像机，认真地看着你）
-
 录了这么久，该说的也都说了。
-我不会承诺给你一个完美的世界，因为那不现实。但我可以承诺，无论未来发生什么，镜头里都会有你的位置。
-
-生日快乐。下次见面的时候...记得笑给我看。
-最后奈绪我想邀请你去花火大会。</p>
+我不会承诺给你一个完美的世界，因为那不现实。但我可以承诺——无论未来发生什么，镜头里都会有你的位置。
+生日快乐。愿下次重逢，你眼底有光，笑意如初。
+最后奈绪想邀请你去花火大会。</p>
                                 <button class="tomori-btn" style="margin-top: 20px;" onclick="enterFireworksMode();">🎆 进入花火大会</button>
                             </div>
                         </div>
@@ -2235,7 +2237,9 @@
         let tomoriMode = false;
         let tomoriCurrentStage = 1; // 1=摄像机取景框, 2=彗星轨迹故事
         let tomoriStarfieldAnimationId = null;
+        let shouldRenderThreeJS = true; // 控制Three.js渲染循环
         let tomoriBlurFieldAnimationId = null;
+        let dateTimeInterval = null; // 日期时间更新定时器
         let currentNodeIndex = 0;
         let handGestureDetected = false;
 
@@ -2711,20 +2715,20 @@
             "不必追逐繁盛，",
             "只需一片落叶的从容。",
             "每一次飘零都不是终结，",
-            "而是为了沉淀下来年更丰盈的色彩。",
+            "而是为了沉淀下来更丰盈的色彩。",
             "愿你的新岁，温润而金黄。",
         ];
 
         // 第二页歉意与快递
         const wishes_part2 = [
-            "陈路周说，夏天是用来相遇的。",
-            "那天你穿了蓝色的裙子，",
-            "我觉得天气很好。",
-            "祝你笑口常开，健康无灾。",
-            "",
+            "即使月亮圆或者不圆，",
+            "都没关系，日子总会发光。",
             "哪怕友利奈绪的摄像机没电了，",
             "哪怕星星都睡着了，",
-            "你依然是这里最值得被记录的风景。",
+            "你依然是这平凡生活里，",
+            "最值得被记录的风景。",
+            "在这沸腾的人海里，",
+            "我祝你笑口常开，健康无灾。",
             "",
             "希望你喜欢这个小小的Surprise！🎉🎂🎈"
         ];
@@ -3053,8 +3057,10 @@
 
         function render() {
             requestAnimationFrame(render);
-            updateParticles();
-            renderer.render(scene, camera);
+            if (shouldRenderThreeJS) {
+                updateParticles();
+                renderer.render(scene, camera);
+            }
         }
 
         // ========== 里世界：友利奈绪的祝福宇宙 ==========
@@ -3923,7 +3929,7 @@
             setTimeout(() => {
                 initBlurField();
                 updateDateTimeDisplay();
-                setInterval(updateDateTimeDisplay, 1000);
+                dateTimeInterval = setInterval(updateDateTimeDisplay, 1000);
                 ui.focusHint.classList.remove('hidden');
                 ui.focusMessage.classList.remove('active');
                 
@@ -3990,7 +3996,7 @@
             tomoriMode = false;
             handGestureDetected = false; // 重置手势检测标志
 
-            // 停止所有动画
+            // 停止所有动画和定时器
             if (tomoriStarfieldAnimationId) {
                 cancelAnimationFrame(tomoriStarfieldAnimationId);
                 tomoriStarfieldAnimationId = null;
@@ -3998,6 +4004,19 @@
             if (tomoriBlurFieldAnimationId) {
                 cancelAnimationFrame(tomoriBlurFieldAnimationId);
                 tomoriBlurFieldAnimationId = null;
+            }
+            if (dateTimeInterval) {
+                clearInterval(dateTimeInterval);
+                dateTimeInterval = null;
+            }
+            // 清理所有场景的星空动画
+            if (window.starfields && window.starfields.length > 0) {
+                window.starfields.forEach(field => {
+                    if (field.animationId) {
+                        cancelAnimationFrame(field.animationId);
+                        field.animationId = null;
+                    }
+                });
             }
 
             // 隐藏友利宇宙（淡出）
@@ -4130,7 +4149,7 @@
                 // 7.2秒后关闭弹窗（确保GIF完整播放一次）
                 setTimeout(() => {
                     ui.heartfeltAidPopup.classList.remove('active');
-                }, 8200);
+                }, 8700);
             });
         }
 
@@ -4272,7 +4291,6 @@
             '家庭和睦',
             '万事胜意',     
             '永远美丽',
-            '一直陪你',
             '愿时光\n待你以温柔\n岁月\n予你以静好',
             '往后余生\n平安健康\n喜乐无忧',
             '愿一切美好\n都比你期待\n还要好上\n一点点',
@@ -4403,9 +4421,9 @@
             _move(ctx) {
                 const dx = this.boomArea.x - this.x;
                 const dy = this.boomArea.y - this.y;
-                // 加快上升速度，从0.01改为0.03
-                this.x = this.x + dx * 0.03;
-                this.y = this.y + dy * 0.03;
+                // 加快上升速度到0.06
+                this.x = this.x + dx * 0.06;
+                this.y = this.y + dy * 0.06;
 
                 if (Math.abs(dx) <= this.ba && Math.abs(dy) <= this.ba) {
                     if (this.blessingText) {
@@ -4488,14 +4506,41 @@
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = `rgba(${parseInt(getRandom(128, 255))},${parseInt(getRandom(128, 255))},${parseInt(getRandom(128, 255))},1)`;
                 
-                const textLines = this.blessingText.split('\n');
+                // 处理文字换行，确保不超出屏幕宽度
+                const rawLines = this.blessingText.split('\n');
+                const maxWidth = canvas.width * 0.85; // 留出15%边距
+                const textLines = [];
+                
+                for (let rawLine of rawLines) {
+                    const lineWidth = ctx.measureText(rawLine).width;
+                    if (lineWidth <= maxWidth) {
+                        textLines.push(rawLine);
+                    } else {
+                        // 长文本需要手动换行
+                        let currentLine = '';
+                        for (let char of rawLine) {
+                            const testLine = currentLine + char;
+                            const testWidth = ctx.measureText(testLine).width;
+                            if (testWidth > maxWidth && currentLine.length > 0) {
+                                textLines.push(currentLine);
+                                currentLine = char;
+                            } else {
+                                currentLine = testLine;
+                            }
+                        }
+                        if (currentLine.length > 0) {
+                            textLines.push(currentLine);
+                        }
+                    }
+                }
+                
                 const lineHeight = finalFontSize * 1.5;
                 const totalHeight = textLines.length * lineHeight;
                 const startY = canvas.height / 2 - totalHeight / 2 + lineHeight / 2;
                 
                 for (let i = 0; i < textLines.length; i++) {
                     const y = startY + i * lineHeight;
-                    const x = canvas.width / 2 + (i - Math.floor(textLines.length / 2)) * 20;
+                    const x = canvas.width / 2;
                     ctx.fillText(textLines[i], x, y);
                 }
                 
@@ -4550,7 +4595,7 @@
             const newTime = Date.now();
             
             // 自动发射烟花逻辑 - 缩短间隔增加发射频率
-            if (newTime - lastFireworkTime > 100 + (window.innerHeight - 767) / 10) {
+            if (newTime - lastFireworkTime > 60 + (window.innerHeight - 767) / 15) {
                 // 文字烟花优先，且激活期间不发射普通烟花
                 if (!hasActiveTextFirework && newTime - lastTextFireworkTime > 400) {
                     const shouldBeText = Math.random() * 100 > 60; // 40%概率发射文字烟花
@@ -4574,8 +4619,8 @@
                         hasActiveTextFirework = true;
                         lastFireworkTime = newTime;
                     } else {
-                        // 普通烟花 - 每次发射2-3个
-                        const count = Math.floor(getRandom(2, 4));
+                        // 普通烟花 - 每次发射3-5个
+                        const count = Math.floor(getRandom(3, 6));
                         for (let i = 0; i < count; i++) {
                             const x = getRandom(canvas.width / 5, canvas.width * 4 / 5);
                             const y = getRandom(50, 200);
@@ -4591,8 +4636,8 @@
                     }
                 } else if (!hasActiveTextFirework) {
                     // 文字烟花显示期间，也发射普通烟花增加热闹效果
-                    if (Math.random() > 0.6) { // 40%概率发射
-                        const count = Math.floor(getRandom(1, 3));
+                    if (Math.random() > 0.5) { // 50%概率发射
+                        const count = Math.floor(getRandom(2, 5));
                         for (let i = 0; i < count; i++) {
                             const x = getRandom(canvas.width / 5, canvas.width * 4 / 5);
                             const y = getRandom(50, 200);
@@ -4668,10 +4713,45 @@
             // 如果在Tomori模式下，先退出
             if (tomoriMode) {
                 console.log('从Tomori模式退出到花火大会');
+                
+                // 停止所有Tomori动画和定时器，释放资源
+                if (tomoriStarfieldAnimationId) {
+                    cancelAnimationFrame(tomoriStarfieldAnimationId);
+                    tomoriStarfieldAnimationId = null;
+                }
+                if (tomoriBlurFieldAnimationId) {
+                    cancelAnimationFrame(tomoriBlurFieldAnimationId);
+                    tomoriBlurFieldAnimationId = null;
+                }
+                if (dateTimeInterval) {
+                    clearInterval(dateTimeInterval);
+                    dateTimeInterval = null;
+                }
+                if (autoEnterTimer) {
+                    clearInterval(autoEnterTimer);
+                    autoEnterTimer = null;
+                }
+                // 清理所有场景的星空动画
+                if (window.starfields && window.starfields.length > 0) {
+                    window.starfields.forEach(field => {
+                        if (field.animationId) {
+                            cancelAnimationFrame(field.animationId);
+                            field.animationId = null;
+                        }
+                    });
+                }
+                
                 // 隐藏Tomori宇宙
                 ui.tomoriUniverse.classList.add('hidden');
+                ui.tomoriUniverse.classList.remove('active');
                 tomoriMode = false;
+                
+                // 移除tomori-mode类，确保动画正常运行
+                document.body.classList.remove('tomori-mode');
             }
+            
+            // 暂停Three.js渲染，释放CPU资源给花火动画
+            shouldRenderThreeJS = false;
             
             // 显示烟花场景
             ui.fireworksScene.classList.remove('hidden');
@@ -4739,6 +4819,9 @@
             setTimeout(() => {
                 ui.fireworksScene.classList.add('hidden');
             }, 800);
+            
+            // 恢复Three.js渲染
+            shouldRenderThreeJS = true;
             
             // 恢复蛋糕界面
             interactionMode = 1;
