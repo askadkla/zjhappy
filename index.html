@@ -857,6 +857,13 @@
             margin: 0;
         }
 
+            /* 手机端友利奈绪节点文字缩小 */
+            @media (max-width: 768px) {
+                .story-text p {
+                    font-size: 0.85rem;
+                }
+            }
+
         /* 彩蛋按钮容器 - 底部中心布局 */
         .easter-eggs-container {
             position: fixed;
@@ -4374,8 +4381,8 @@
                 this.y = Math.abs(dy) < 0.1 ? this.ty : this.y + dy * 0.1;
                 this.lifeTime++;
 
-                // 文字粒子1秒消失（60帧），普通粒子80帧
-                const maxLife = isTextParticle ? 60 : 80;
+                    // 文字粒子0.5秒消失（30帧），普通粒子80帧
+                    const maxLife = isTextParticle ? 30 : 80;
                 if (dx === 0 && Math.abs(dy) <= 100 && this.lifeTime > maxLife) {
                     this.dead = true;
                 }
