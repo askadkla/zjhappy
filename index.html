@@ -4156,7 +4156,7 @@
                 // 7.2秒后关闭弹窗（确保GIF完整播放一次）
                 setTimeout(() => {
                     ui.heartfeltAidPopup.classList.remove('active');
-                }, 8700);
+                }, 8500);
             });
         }
 
@@ -4381,8 +4381,8 @@
                 this.y = Math.abs(dy) < 0.1 ? this.ty : this.y + dy * 0.1;
                 this.lifeTime++;
 
-                    // 文字粒子0.5秒消失（30帧），普通粒子80帧
-                    const maxLife = isTextParticle ? 30 : 80;
+                    // 文字粒子0.1秒消失（6帧），普通粒子80帧
+                    const maxLife = isTextParticle ? 6 : 80;
                 if (dx === 0 && Math.abs(dy) <= 100 && this.lifeTime > maxLife) {
                     this.dead = true;
                 }
